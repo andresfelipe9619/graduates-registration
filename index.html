@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
+    <style>
+        .main.container {
+            margin-top: 100px;
+        }
+        
+        h1{
+            font-size: 36px;
+        }
+        .menu {
+            margin-bottom: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui fixed inverted menu red">
+        <div class="ui container">
+            <a href="#" class="header item">
+                <img class="logo" src="http://www.univalle.edu.co/images/logo-footer.png">Universidad del Valle
+            </a>
+        </div>
+    </div>
+
+    <div class="ui main container">
+        <h1 class="ui header red">Noche de Gala Egresados 2018</h1>
+        <div class="ui middle center grid">
+            <div class="ten wide column">
+                <h2 class="ui  image header">
+                    <img src="http://www.univalle.edu.co/images/logo-footer.png" class="image">
+                    <div class="content">
+                        Por favor ingrese sus datos en el siguiente formulario
+                    </div>
+                </h2>
+                <form class="ui form">
+                    <div class="field">
+                        <label>Nombre</label>
+                        <div class="two fields">
+                            <div class="field">
+                                <input name="first-name" placeholder="Nombres" type="text">
+                            </div>
+                            <div class="field">
+                                <input name="last-name" placeholder="Apellidos" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Numero de Cedula</label>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <input name="identification" placeholder="Numero de documento" type="number">
+                            </div>
+                            <div class="four wide field">
+                                <input name="ex-city" placeholder="Ciudad" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                    <label>Correo electronico</label>
+                                <input name="email" placeholder="Correo Electronico" type="email">
+                            </div>
+                            <div class="four wide field">
+                                <label>Numero de Celular</label>
+                                <input name="ex-city" placeholder="Telefono" type="tel">
+                            </div>
+                        </div>
+
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                    <label>Programa Academico del cual egreso</label>
+                                <input name="email" placeholder="Correo Electronico" type="email">
+                            </div>
+                            <div class="four wide field">
+                                <label>Facultad</label>
+                                <input name="ex-city" placeholder="Telefono" type="tel">
+                            </div>
+                        </div>
+
+                    <h4 class="ui dividing header">Informacion de Pago</h4>
+                    <div class="field">
+                        <label>Card Type</label>
+                        <div class="ui selection dropdown">
+                            <input name="card[type]" type="hidden">
+                            <div class="default text">Type</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <div class="item" data-value="visa">
+                                    <i class="visa icon"></i>
+                                    Visa
+                                </div>
+                                <div class="item" data-value="amex">
+                                    <i class="amex icon"></i>
+                                    American Express
+                                </div>
+                                <div class="item" data-value="discover">
+                                    <i class="discover icon"></i>
+                                    Discover
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fields">
+                        <div class="seven wide field">
+                            <label>Card Number</label>
+                            <input name="card[number]" maxlength="16" placeholder="Card #" type="text">
+                        </div>
+                        <div class="three wide field">
+                            <label>CVC</label>
+                            <input name="card[cvc]" maxlength="3" placeholder="CVC" type="text">
+                        </div>
+                        <div class="six wide field">
+                            <label>Expiration</label>
+                            <div class="two fields">
+                                <div class="field">
+                                    <select class="ui fluid search dropdown" name="card[expire-month]">
+                                        <option value="">Month</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <input name="card[expire-year]" maxlength="4" placeholder="Year" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui button" tabindex="0">Enviar</div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+    <script src="semantic/dist/semantic.min.js"></script>
+    <?!= include('main'); ?>
+</body>
+
+</html>
