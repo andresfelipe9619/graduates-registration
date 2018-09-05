@@ -2,37 +2,90 @@
 $(document)
     .ready(function() {
       $('.ui.form')
-        .form({
-          fields: {
-            email: {
-              identifier  : 'email',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your e-mail'
-                },
-                {
-                  type   : 'email',
-                  prompt : 'Please enter a valid e-mail'
-                }
-              ]
-            },
-            password: {
-              identifier  : 'password',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your password'
-                },
-                {
-                  type   : 'length[6]',
-                  prompt : 'Your password must be at least 6 characters'
-                }
-              ]
-            }
-          }
-        })
-      ;
+      .form({
+        on: 'blur',
+        fields: {
+          nombres: {
+            identifier  : 'nombres',
+            rules: [
+              {
+                type   : 'text',
+                prompt : 'Por favor ingrese un nombre valido'
+              },
+              {
+                type   : 'empty',
+                prompt : 'Por favor ingrese un nombre'
+              }
+              
+            ]
+          },
+          apellidos: {
+            identifier  : 'apellidos',
+            rules: [
+              {
+                type   : 'text',
+                prompt : 'Por favor ingreseun apellido valido'
+              },
+              {
+                type   : 'empty',
+                prompt : 'Por favor ingrese un apellido'
+              }
+            ]
+          },
+          cedula: {
+            identifier  : 'cedula',
+            rules: [
+              {
+                type   : 'number',
+                prompt : 'Por favor ingrese un numero valido'
+              },
+              {
+                type   : 'empty',
+                prompt : 'Por favor ingrese un numero'
+              }
+            ]
+          },
+          email: {
+            identifier  : 'email',
+            rules: [
+              {
+                type   : 'email',
+                prompt : 'Por favor ingrese a valid e-mail'
+              },
+              {
+                type   : 'empty',
+                prompt : 'Por favor ingrese a value'
+              }
+            ]
+          },
+          programa: {
+            identifier  : 'programa',
+            rules: [
+              {
+                type   : 'text',
+                prompt : 'Por favor ingrese un programa valido'
+              },
+              {
+                type   : 'empty',
+                prompt : 'Por favor ingrese un programa'
+              }
+            ]
+          },
+          facultad: {
+            identifier  : 'facultad',
+            rules: [
+              {
+                type   : 'text',
+                prompt : 'Por favor ingrese una facultad valido'
+              },
+              {
+                type   : 'empty',
+                prompt : 'Por favor ingrese una facultad'
+              }
+            ]
+          },
+        }
+      })
     })
   ;
 
