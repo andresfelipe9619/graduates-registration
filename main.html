@@ -1,0 +1,166 @@
+$(document)
+  .ready(function () {
+    formValidation()
+    loadAcademicProgramsAndFaculties()
+    // $('.submit').on('click',function(event){
+    //     event.preventDefault()
+    //     $('.ui.form').serializa
+
+    // })
+  })
+
+function validationpassed(e) {
+  e.preventDefault()
+  var mForm = $('.ui.form')
+  var formData = mForm.serializeArray()
+
+  function onSuccess(person) {
+    console.log('A nice formatted person', person)
+  }
+
+  console.log(formData)
+  google.script.run.withSuccessHandler(onSuccess).registerPerson(formData)
+}
+
+function searchForPerson() {
+  $('#btn-search').removeClass('icon')
+
+  $('#btn-search').addClass('loading')
+
+  function onSuccess(person) {
+    console.log('A nice formatted person', person)
+    showForm()
+    $('#btn-search').removeClass('loading')
+    if (person.isRegistered) {
+      loadPersonInForm(person)
+    } else {
+
+    }
+  }
+  var cedula = $('#cedula').val()
+  google.script.run.withSuccessHandler(onSuccess).searchPerson(cedula)
+}
+
+function loadPersonInForm(person) {
+  $('[name=]').val('')
+}
+
+
+function showForm() {
+  $('#mainForm').css('display', 'inline-block')
+}
+
+function hideForm() {
+  $('#mainForm').css('display', 'none')
+
+}
+
+function loadAcademicProgramsAndFaculties() {
+
+  function onSuccess(programs) {
+    console.log('good job, go smoke and fuck', programs)
+  }
+
+
+  google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms()
+
+}
+
+function formValidation() {
+  $('.ui.form')
+    .form({
+      inline: true,
+      on: 'blur',
+      transition: 'fade down',
+      onSuccess: validationpassed,
+      fields: {
+        nombres: {
+          identifier: 'nombres',
+          rules: [
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese un nombre'
+            }
+          ]
+        },
+        apellidos: {
+          identifier: 'apellidos',
+          rules: [
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese un apellido'
+            }
+          ]
+        },
+        cedula: {
+          identifier: 'cedula',
+          rules: [
+            {
+              type: 'number',
+              prompt: 'Por favor ingrese una cedula valido'
+            },
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese una cedula'
+            }
+          ]
+        },
+        celular: {
+          identifier: 'celular',
+          rules: [
+            {
+              type: 'number',
+              prompt: 'Por favor ingrese un numero valido'
+            },
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese un numero'
+            }
+          ]
+        },
+        email: {
+          identifier: 'email',
+          rules: [
+            {
+              type: 'email',
+              prompt: 'Por favor ingrese a valid e-mail'
+            },
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese a value'
+            }
+          ]
+        },
+        programa: {
+          identifier: 'programa',
+          rules: [
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese un programa'
+            }
+          ]
+        },
+
+        expedicion: {
+          identifier: 'expedicion',
+          rules: [
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese una expedicion'
+            }
+          ]
+        },
+        facultad: {
+          identifier: 'facultad',
+          rules: [
+            {
+              type: 'empty',
+              prompt: 'Por favor ingrese una facultad'
+            }
+          ]
+        },
+      }
+    })
+}
+
+

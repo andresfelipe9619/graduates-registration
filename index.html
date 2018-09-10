@@ -13,7 +13,24 @@
             margin-bottom: 100px;
         }
 
+
         .main.container {
+            margin-top: 50px;
+        }
+
+        input:not([name='email']) {
+            text-transform: uppercase
+        }
+
+        ::placeholder {
+            text-transform: none;
+        }
+
+        #mainForm {
+            display: none;
+        }
+
+        #id-search {
             margin-top: 50px;
         }
     </style>
@@ -31,103 +48,96 @@
     <div class="ui main container">
         <!-- <h1 class="ui header red">Noche de Gala Egresados 2018</h1> -->
         <div class="ui middle center grid">
-            <div class="ten wide column">
-                <h2 class="ui  image header">
-                    <img src="http://www.univalle.edu.co/images/logo-footer.png" class="logo">
-                    <div class="content">
-                        Por favor Ingrese Sus Datos En El Siguiente Formulario
-                    </div>
-                </h2>
-                <form class="ui form segment">
-                    <h4 class="ui dividing header">Informacion General</h4>
-                    <div class="field">
-                        <div class="fields">
-                            <div class="twelve wide field">
-                                <label>Numero de Cédula</label>
-                                <input name="cedula" placeholder="Numero de documento" type="text">
-                            </div>
-                            <div class="four wide field">
+            <div class="row" id="id-search">
+                <div class="ui action input large">
+                    <input id="cedula" placeholder="Buscar Cedula..." type="text">
+                    <button id="btn-search" class="ui icon button" onclick="searchForPerson()">
+                        <i class="search icon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+
+
+                <div id="mainForm" class="ten wide center column">
+                    <h2 class="ui image header">
+                        <img src="http://www.univalle.edu.co/images/logo-footer.png" class="logo">
+                        <div class="content">
+                            Por favor Ingrese Sus Datos En El Siguiente Formulario
+                        </div>
+                    </h2>
+                    <form class="ui form segment">
+                        <h4 class="ui dividing header">Informacion General</h4>
+                        <div class="field">
+                            <div class="fields">
+                                <div class="sixteen wide field">
+                                    <label>Numero de Cédula</label>
+                                    <input name="cedula" placeholder="Numero de documento" type="text">
+                                </div>
+                                <!-- <div class="four wide field">
                                 <label>Ciudad Expedicion</label>
 
                                 <input name="expedicion" placeholder="Ciudad" type="text">
+                            </div> -->
                             </div>
                         </div>
-                    </div>
-                    <div class="field">
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Nombres</label>
-                                <input name="nombres" placeholder="Nombres" type="text">
-                            </div>
-                            <div class="field">
-                                <label>Apellidos</label>
-
-                                <input name="apellidos" placeholder="Apellidos" type="text">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="fields">
-                        <div class="twelve wide field">
-                            <label>Correo Electrónico</label>
-                            <input name="email" placeholder="Correo Electronico" type="text">
-                        </div>
-                        <div class="four wide field">
-                            <label>Télefono Celular</label>
-                            <input name="celular" placeholder="Telefono" type="text">
-                        </div>
-                    </div>
-
-                    <div class="fields">
-                        <div class="ten wide field">
-                            <label>Programa Académico del Cual Egresó</label>
-                            <input name="programa" placeholder="Programa Acad{emico" type="text">
-                        </div>
-                        <div class="six wide field">
-                            <label>Facultad</label>
-                            <input name="facultad" placeholder="Facultad" type="text">
-                        </div>
-                    </div>
-                    <!-- 
-                    <h4 class="ui dividing header">Informacion de Pago</h4>
-                    <div class="field">
-                        <label>Card Type</text>
-                        <div class="ui selection dropdown">
-                            <input name="card[type]"text="text">
-                            <div class="default text">Type</text>
-                            <i class="dropdown icon"></i>
-                            <div class="menu">
-                                <div class="item" data-value="visa">
-                                    <i class="visa icon"></i>
-                                    Visa
+                        <div class="field">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Nombres</label>
+                                    <input name="nombres" placeholder="Nombres" type="text">
                                 </div>
-                                <div class="item" data-value="amex">
-                                    <i class="amex icon"></i>
-                                    American Express
-                                </div>
-                                <div class="item" data-value="discover">
-                                    <i class="discover icon"></i>
-                                    Discover
+                                <div class="field">
+                                    <label>Apellidos</label>
+
+                                    <input name="apellidos" placeholder="Apellidos" type="text">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="fields">
-                        <div class="seven wide field">
-                            <label>Card Number</label>
-                            <input name="card[number]" maxlength="16" placeholder="Card #" type="text">
+
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label>Correo Electrónico</label>
+                                <input name="email" placeholder="Correo Electronico" type="text">
+                            </div>
+                            <div class="four wide field">
+                                <label>Télefono Celular</label>
+                                <input name="celular" placeholder="Telefono" type="text">
+                            </div>
                         </div>
-                        <div class="three wide field">
-                            <label>CVC</label>
-                            <input name="card[cvc]" maxlength="3" placeholder="CVC" type="text">
+
+                        <div class="fields">
+                            <div class="ten wide field">
+                                <label>Programa Académico del Cual Egresó</label>
+                                <input name="programa" placeholder="Programa Acad{emico" type="text">
+                            </div>
+                            <div class="six wide field">
+                                <label>Facultad</label>
+                                <input name="facultad" placeholder="Facultad" type="text">
+                            </div>
                         </div>
 
-                    </div> -->
+                        <h4 class="ui dividing header">Informacion de Pago</h4>
+                        <div class="field">
+                            <label>Card Type</text>
+                        </div>
+                        <div class="fields">
+                            <div class="seven wide field">
+                                <label>Card Number</label>
+                                <input name="card[number]" maxlength="16" placeholder="Card #" type="text">
+                            </div>
+                            <div class="three wide field">
+                                <label>CVC</label>
+                                <input name="card[cvc]" maxlength="3" placeholder="CVC" type="text">
+                            </div>
 
-                    <div class="ui submit button" tabindex="0">Enviar</div>
-                    <div class="ui error message"></div>
-                </form>
+                        </div>
 
+                        <div class="ui submit button" tabindex="0">Enviar</div>
+                        <div class="ui error message"></div>
+                    </form>
+
+                </div>
             </div>
         </div>
     </div>
