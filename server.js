@@ -27,10 +27,10 @@ function getPrograms() {
     return programsObjects
 }
 
-function getPeopleRegitered() {
+function getPeopleRegistered() {
     var peopleSheet = getRawDataFromSheet(GENERAL_DB, "INSCRITOS")
     var peopleObjects = sheetValuesToObject(peopleSheet)
-    logFunctionOutput(getPeopleRegitered.name, peopleObjects)
+    logFunctionOutput(getPeopleRegistered.name, peopleObjects)
     return peopleObjects
 }
 
@@ -38,17 +38,16 @@ function searchPerson(cedula) {
     var person = validatePerson(cedula)
 
     logFunctionOutput(searchPerson.name, person)
-
-    if (person.isRegitered) {
-        return person
-    } else {
-        return null
-    }
-
+    return person
 }
 
-function registerPerson(person) {
 
+function registerPerson(person) {
+    var inscritosSheet = getSheetFromSpreadSheet(GENERAL_DB, "INSCRITOS")
+    var headers = inscritosSheet.getSheetValues(1, 1, 1, inscritosSheet.getLastColumn())[0]
+    var personValues = objectToSheetValues(person, headers)
+
+    inscritosSheet.appendRow(personValues)
 }
 
 function getFacultiesAndPrograms() {
@@ -56,17 +55,27 @@ function getFacultiesAndPrograms() {
         faculties: null,
         programs: null
     }
-    result.programs = getPrograms()
-    result.faculties = getFacultiesFromPrograms(result.programs)
+    var programs = getPrograms()
+    var lastPrograms = []
 
+    for (var program in programs) {
+        if (lastPrograms.indexOf(programs[program].nombre) < 0) {
+            lastPrograms.push(programs[program].nombre)
+        }
+    }
+
+    result.faculties = getFacultiesFromPrograms(programs)
+    result.programs = lastPrograms
     return result
 }
 
 function getFacultiesFromPrograms(programs) {
     var faculties = []
     for (var program in programs) {
-        if (faculties.indexOf(programs[program].facultad) == -1){
-            faculties.push(programs[program])
+        if (faculties.indexOf(programs[program].facultad) < 0) {
+            Logger.log('FACULTAD QUE NO ESTA')
+            Logger.log(programs[program].facultad)
+            faculties.push(programs[program].facultad)
         }
     }
 
@@ -76,10 +85,10 @@ function getFacultiesFromPrograms(programs) {
 
 
 function validatePerson(cedula) {
-    var inscritos = getPeopleRegitered();
+    var inscritos = getPeopleRegistered();
     // var res = ""
     var result = {
-        isRegitered: false,
+        isRegistered: false,
         index: -1,
         data: null,
     };
@@ -90,7 +99,7 @@ function validatePerson(cedula) {
         logFunctionOutput(validatePerson.name, inscritos[person])
 
         if (String(inscritos[person].cedula) === String(cedula)) {
-            result.isRegitered = true
+            result.isRegistered = true
             result.index = person
             result.data = inscritos[person]
         }
@@ -101,9 +110,28 @@ function validatePerson(cedula) {
     if (result.index > -1) {
         return result
     } else {
-        result.isRegitered = false
+        result.isRegistered = false
         return result
     }
+}
+
+function objectToSheetValues(object, headers) {
+    var arrayValues = new Array(headers.length)
+    Logger.log('HEADERS')
+    Logger.log(headers)
+    Logger.log('OBJECT')
+    Logger.log(object)
+    for(var item in object){
+        for (var header in headers) {
+            if (String(object[item].name) == String(headers[header]).toLowerCase()) {
+                arrayValues[header] = object[item[header].toLowerCase()]
+            }
+        }
+    
+    }
+
+    logFunctionOutput(objectToSheetValues.name, arrayValues)
+    return arrayValues
 }
 
 

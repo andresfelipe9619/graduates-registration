@@ -109,40 +109,49 @@
                         <div class="fields">
                             <div class="ten wide field">
                                 <label>Programa Académico del Cual Egresó</label>
-                                <input name="programa" placeholder="Programa Acad{emico" type="text">
+
+                                <select name="programa" class="ui search dropdown">
+                                </select>
                             </div>
+
                             <div class="six wide field">
                                 <label>Facultad</label>
-                                <input name="facultad" placeholder="Facultad" type="text">
+                                <select name="facultad" class="ui search dropdown">
+                                </select>
                             </div>
                         </div>
 
                         <h4 class="ui dividing header">Informacion de Pago</h4>
-                        <div class="field">
-                            <label>Card Type</text>
-                        </div>
-                        <div class="fields">
-                            <div class="seven wide field">
-                                <label>Card Number</label>
-                                <input name="card[number]" maxlength="16" placeholder="Card #" type="text">
-                            </div>
-                            <div class="three wide field">
-                                <label>CVC</label>
-                                <input name="card[cvc]" maxlength="3" placeholder="CVC" type="text">
-                            </div>
 
+                        <div class="fourteen wide inline fields">
+                            <label for="metodo_pago">Seleccione su metodo de pago:
+                            </label>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input name="metodo_pago" checked="" tabindex="0" class="hidden" type="radio">
+                                    <label>PSE</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input name="metodo_pago" tabindex="0" class="hidden" type="radio">
+                                    <label>Consignacion</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
                         </div>
 
                         <div class="ui submit button" tabindex="0">Enviar</div>
                         <div class="ui error message"></div>
+                        <div class="ui success message">Damn!, you have been selected for a free blunt!</div>
                     </form>
 
                 </div>
             </div>
         </div>
     </div>
-
-
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
