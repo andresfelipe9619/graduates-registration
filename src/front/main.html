@@ -160,20 +160,10 @@ function loadAcademicProgramsAndFaculties() {
 function searchPersonInSRA(cedula){
 
   var options = {
-    per_doc_ide_numero: 16825541,
-    wincomboper_doc_ide_numero: 16825541,
-    accion:"Consultar+Grados"
+    documento: 16825541,
+
   }
-  fetch('https://swebse29.univalle.edu.co/sra//paquetes/graduado/index.php', {
-    method: 'post',
-    body: JSON.stringify(options),
-    headers:{
-      'Content-Type': 'applications/x-www-form-urlencoded',
-      'Access-Control-Request-Method': 'POST',
-      'Access-Control-Request-Headers': 'X-Custom-Header',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    }
-  }).then(function(response) {
+  fetch('https://localhost/test/hello.php').then(function(response) {
     return response.json();
   }).then(function(data) {
     console.log('Created Gist:', data);
