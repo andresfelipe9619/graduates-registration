@@ -2,166 +2,164 @@
 <html>
 
 <head>
-    <base target="_top">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
-    <style>
-        h1 {
-            font-size: 36px;
-        }
+  <base target="_top">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
+  <style>
 
-        #navbar {
-            margin-bottom: 60px;
-        }
+  #navbar {
+    margin-bottom: 60px;
+  }
 
 
-        .main.container {
-            margin: 50px 0px 0px 20px;
-        }
+  #main-content {
+    margin-top: 100px ;
+  }
 
-        input:not([name='correo']) {
-            text-transform: uppercase
-        }
+  input:not([name='correo']) {
+    text-transform: uppercase
+  }
 
-        input[name='correo']{
-            text-transform: lowercase
-        }
+  input[name='correo']{
+    text-transform: lowercase
+  }
 
-        ::placeholder {
-            text-transform: none;
-        }
+  ::placeholder {
+    text-transform: none;
+  }
 
-        #mainForm {
-            display: none;
-        }
+  #mainForm {
+    display: none;
+  }
 
-        #id-search {
-            margin: 50px 0px -50px 20px;
-        }
-    </style>
+  #id-search {
+    margin-top: 50px;
+  }
+
+
+  </style>
 </head>
 
 <body>
-    <div id="navbar" class="ui fixed inverted menu red">
-        <div class="ui container">
-            <h3 class="header item">
-                <img class="logo" src="http://www.univalle.edu.co/images/logo-footer.png">Noche de Gala Egresados 2018
-            </h3>
-        </div>
+  <div id="navbar" class="ui fixed inverted menu red">
+    <div class="ui container">
+      <h3 class="header item">
+        <img class="logo" src="http://www.univalle.edu.co/images/logo-footer.png">&nbsp;&nbsp;Noche de Gala Egresados 2018
+      </h3>
     </div>
+  </div>
 
-    <div class="ui main container">
-        <!-- <h1 class="ui header red">Noche de Gala Egresados 2018</h1> -->
-        <div class="ui middle center grid">
-          <div class="row">
-            <h2>Formulario de Inscripcion</h2>
+  <div id="main-content" class="ui main container middle center grid">
+    <div class="row">
+      <h2>FORMULARIO DE INSCRIPCIÓN</h2>
+    </div>
+    <div class="two column row" id="id-search">
+      <div class="column">
+        <div class="ui action icon input large">
+          <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Ingrese su numero de cédula..." type="text">
+          <button id="btn-search" tabindex="0" class="ui icon button" onclick="searchForPerson()">
+            <i class="search icon"></i>
+          </button>
+        </div>
+      </div>
+      <div class="column">
+        <div id="search-msg" class="ui message hidden"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div id="mainForm" class="ten wide center column">
 
+        <form class="ui form segment">
+          <div class="ui error message"></div>
+          <div class="ui success message">Apreciado Egresado, su inscripción ha sido registrada, para realizar el pago, por favor dar clie en el botón ENLACE PORTAL DE PAGOS. En un lapso de máximo de 36 horas sera notificado de que el pago de su incirpción fue debidamente registrado.</div>
+          <h4 class="ui dividing header">Información General</h4>
+          <div class="field">
+            <div class="fields">
+              <div class="sixteen wide field">
+                <label>Numero de Cédula</label>
+                <input class="numeric" name="cedula" placeholder="Numero de documento" type="text">
+              </div>
+              <!-- <div class="four wide field">
+              <label>Ciudad Expedicion</label>
+
+              <input name="expedicion" placeholder="Ciudad" type="text">
+            </div> -->
           </div>
-            <div class="row" id="id-search">
-                <div class="ui action input large">
-                    <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Consulte su cédula..." type="text">
-                    <button id="btn-search" class="ui icon button" onclick="searchForPerson()">
-                        <i class="search icon"></i>
-                    </button>
-                </div>
-                <div id="search-msg" class="ui message hidden"></div>
-            </div>
-            <div class="row">
-                <div id="mainForm" class="ten wide center column">
-
-                    <form class="ui form segment">
-                        <div class="ui error message"></div>
-                        <div class="ui success message">Damn!, you have been selected for a free blunt!</div>
-                        <h4 class="ui dividing header">Informacion General</h4>
-                        <div class="field">
-                            <div class="fields">
-                                <div class="sixteen wide field">
-                                    <label>Numero de Cédula</label>
-                                    <input class="numeric" name="cedula" placeholder="Numero de documento" type="text">
-                                </div>
-                                <!-- <div class="four wide field">
-                                <label>Ciudad Expedicion</label>
-
-                                <input name="expedicion" placeholder="Ciudad" type="text">
-                            </div> -->
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label>Nombres</label>
-                                    <input name="nombres" placeholder="Nombres" type="text">
-                                </div>
-                                <div class="field">
-                                    <label>Apellidos</label>
-
-                                    <input name="apellidos" placeholder="Apellidos" type="text">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="fields">
-                            <div class="twelve wide field">
-                                <label>Correo Electrónico</label>
-                                <input name="correo" placeholder="Correo Electronico" type="text">
-                            </div>
-                            <div class="four wide field">
-                                <label>Télefono Celular</label>
-                                <input name="celular" class="numeric" placeholder="Telefono" type="text">
-                            </div>
-                        </div>
-
-                        <div class="fields">
-                            <div class="ten wide field">
-                                <label>Programa Académico del Cual Egresó</label>
-
-                                <select name="programa" class="ui search dropdown">
-                                </select>
-                            </div>
-
-                            <div class="six wide field">
-                                <label>Facultad</label>
-                                <select name="facultad" class="ui search dropdown">
-                                </select>
-                            </div>
-                        </div>
-
-                        <h4 class="ui dividing header">Informacion de Pago</h4>
-
-                        <div class="fourteen wide inline fields">
-                            <p>El pago se ralizara por medio de PSE. Despues de haber realizado su registro exitoso le aprecera un enlace a la pasarela de pagos</p>
-                            <!-- <label for="metodo_pago">Seleccione su metodo de pago:
-                            </label>
-                            <div class="field">
-                                <div class="ui radio checkbox">
-                                    <input name="metodo_pago" value="PSE" checked="" tabindex="0" class="hidden" type="radio">
-                                    <label>PSE</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui radio checkbox">
-                                    <input name="metodo_pago" value="CONSIGNACION" tabindex="0" class="hidden" type="radio">
-                                    <label>Consignacion</label>
-                                </div>
-                            </div> -->
-                        </div>
-                        <!-- <div class="field">
-                            <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
-                        </div> -->
-
-                        <div class="ui submit button" tabindex="0">Realizar Pago</div>
-
-                    </form>
-
-                </div>
-            </div>
         </div>
-    </div>
+        <div class="field">
+          <div class="two fields">
+            <div class="field">
+              <label>Nombres</label>
+              <input name="nombres" placeholder="Nombres" type="text">
+            </div>
+            <div class="field">
+              <label>Apellidos</label>
+              <input name="apellidos" placeholder="Apellidos" type="text">
+            </div>
+          </div>
+        </div>
 
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
-    <?!= include('main'); ?>
+        <div class="fields">
+          <div class="twelve wide field">
+            <label>Correo Electrónico</label>
+            <input name="correo" placeholder="Correo Electronico" type="text">
+          </div>
+          <div class="four wide field">
+            <label>Télefono Celular</label>
+            <input name="celular" class="numeric" placeholder="Telefono" type="text">
+          </div>
+        </div>
+
+        <div class="fields">
+          <div class="ten wide field">
+            <label>Programa Académico del Cual Egresó</label>
+
+            <select name="programa" class="ui search dropdown">
+            </select>
+          </div>
+
+          <div class="six wide field">
+            <label>Facultad</label>
+            <select name="facultad" class="ui search dropdown">
+            </select>
+          </div>
+        </div>
+
+        <h4 class="ui dividing header">Informacion de Pago</h4>
+
+        <div class="fourteen wide inline fields">
+          <p>El pago se ralizara por medio de PSE. Despues de haber realizado su registro exitoso le aprecera un enlace a la pasarela de pagos</p>
+            <!-- <label for="metodo_pago">Seleccione su metodo de pago:
+          </label>
+          <div class="field">
+          <div class="ui radio checkbox">
+          <input name="metodo_pago" value="PSE" checked="" tabindex="0" class="hidden" type="radio">
+          <label>PSE</label>
+        </div>
+      </div>
+      <div class="field">
+      <div class="ui radio checkbox">
+      <input name="metodo_pago" value="CONSIGNACION" tabindex="0" class="hidden" type="radio">
+      <label>Consignacion</label>
+    </div>
+  </div> -->
+</div>
+<!-- <div class="field">
+<input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
+</div> -->
+
+<div class="ui submit button" >Generar Pago</div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+<?!= include('main'); ?>
 </body>
 
 </html>

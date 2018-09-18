@@ -1,5 +1,5 @@
 var GENERAL_DB = "https://docs.google.com/spreadsheets/d/1s4fI_h4lKP8TUW_3iVTLDxZQOyXCMNUhuRhM1C7bNOA/edit?usp=sharing"
-var PROGRAMAS = "https://docs.google.com/spreadsheets/u/1/d/1sJKpKS3B29hDRhpDsxevYcgAkwIKlS49F6-Ec7-fF5c/edit?usp=sharing_eip&ts=5b89b366"
+var PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing"
 
 function doGet(request) {
     return HtmlService.createTemplateFromFile('index')
@@ -23,7 +23,7 @@ function getRawDataFromSheet(url, sheet) {
 function getPrograms() {
     var programsSheet = getRawDataFromSheet(PROGRAMAS, "PROGRAMAS")
     var programsObjects = sheetValuesToObject(programsSheet)
-    // logFunctionOutput(getPrograms, programsObjects)
+    // logFunctionOutput(getPrograms.name, programsObjects)
     return programsObjects
 }
 
@@ -36,7 +36,6 @@ function getPeopleRegistered() {
 
 function searchPerson(cedula) {
     var person = validatePerson(cedula)
-
     logFunctionOutput(searchPerson.name, person)
     return person
 }
@@ -68,7 +67,6 @@ function getFacultiesAndPrograms() {
 
     for (var program in programs) {
         for (var last in lastPrograms) {
-          Logger.log(programs[program].nombre + "&" + last.nombre)
             if (String(programs[program].nombre) === String(lastPrograms[last].nombre)) {
                 esta = true
                 break
@@ -82,6 +80,7 @@ function getFacultiesAndPrograms() {
     }
     result.faculties = getFacultiesFromPrograms(programs)
     result.programs = lastPrograms
+    logFunctionOutput(getFacultiesAndPrograms.name, result)
     return result
 }
 

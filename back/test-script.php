@@ -1,9 +1,9 @@
 
-<?php 
+<?php
 
-	
+
 function get_student_information($cod_est){
-   
+
    $curl = curl_init();
 
    curl_setopt($curl, CURLOPT_URL, "https://swebse32.univalle.edu.co/sra/paquetes/herramientas/wincombo.php?opcion=estudianteConsulta&patron=$cod_est&variableCalculada=0");
@@ -44,37 +44,37 @@ function search_student_info($code_student){
 
 	//echo $html;
 
-	$dom = new domDocument; 
-   
-	$dom->loadHTML($html); 
-   
-   	$dom->preserveWhiteSpace = false; 
-   
-   	$tables = $dom->getElementsByTagName('table'); 
-   
-   	$rows = $tables->item(0)->getElementsByTagName('tr'); 
-   
-   	$cols = $rows[2]->getElementsByTagName('td'); 
-    
+	$dom = new domDocument;
+
+	$dom->loadHTML($html);
+
+   	$dom->preserveWhiteSpace = false;
+
+   	$tables = $dom->getElementsByTagName('table');
+
+   	$rows = $tables->item(0)->getElementsByTagName('tr');
+
+   	$cols = $rows[2]->getElementsByTagName('td');
+
     $cod_per = (string)$cols->item(9)->nodeValue;
 	$cod_estu = (string)$cols->item(10)->nodeValue;
-	
+
 	$documento = explode(" ", (string)$cols->item(11)->nodeValue);
 	$tipo_doc = $documento[0];
 	$numero_doc = $documento[1];
 	$nombre = str_replace(" ","+",(string)$cols->item(12)->nodeValue);
-	
+
 	$apellido = str_replace(" ","+",(string)$cols->item(13)->nodeValue);
 	$apellido = (string)$cols->item(13)->nodeValue;
-  
 
-	echo 'Codigo persona '.$cod_per.'<br />';	
+
+	echo 'Codigo persona '.$cod_per.'<br />';
 	echo 'Codigo estudiante'.$cod_estu.'<br />';
 	echo 'Tipo documento '.$tipo_doc.'<br />';
 	echo 'Numero documento '.$numero_doc.'<br />';
 	echo 'Nombres '.$nombre.'<br />';
 	echo 'Apellidos '.$apellido.'<br />';
-	  
+
 
   	$sede_plan_modo = (string)$cols->item(14)->nodeValue;
 	$tipo_sede = explode("-", $sede_plan_modo);
@@ -86,7 +86,7 @@ function search_student_info($code_student){
 	echo 'Plan '.$plan.'<br />';
 	echo 'Sede '.$sede.'<br />';
 	echo 'Modalidad '.$mod.'<br />';
-	echo '<hr />'; 
+	echo '<hr />';
 
 
     $chp = curl_init();
@@ -94,7 +94,7 @@ function search_student_info($code_student){
     curl_setopt($chp, CURLOPT_URL, "https://swebse32.univalle.edu.co/sra//paquetes/academica/index.php");
 
     curl_setopt($chp, CURLOPT_RETURNTRANSFER, true);
-    
+
     curl_setopt($chp, CURLOPT_SSL_VERIFYHOST, false);
 
     curl_setopt($chp, CURLOPT_HTTPHEADER, array(
@@ -116,19 +116,19 @@ function search_student_info($code_student){
 
    	//echo $respo;
 
-   	$dom->loadHTML($respo); 
-   
-    $dom->preserveWhiteSpace = false; 
-   
-    $tables = $dom->getElementsByTagName('table'); 
-   
-    $rows = $tables->item(0)->getElementsByTagName('tr'); 
-   
-    $cols = $dom->getElementsByTagName('td'); 
+   	$dom->loadHTML($respo);
+
+    $dom->preserveWhiteSpace = false;
+
+    $tables = $dom->getElementsByTagName('table');
+
+    $rows = $tables->item(0)->getElementsByTagName('tr');
+
+    $cols = $dom->getElementsByTagName('td');
     $estado = 'INACTIVO';
     //echo 'El estado es '.$estado.'<br />';
-      
-      
+
+
 	for ($i = 0; $i <= 100; $i++) {
 	    $periodo_academico = (string)$cols->item($i)->nodeValue;
 	    #echo $periodo_academico.'<br />';
@@ -137,7 +137,7 @@ function search_student_info($code_student){
 	    	$estado = 'ACTIVO';
 
 	    }
-		
+
 	}
 
 	echo '<br>EL ESTADO ES '.$estado.'<br />';
@@ -159,21 +159,19 @@ function write_student_information_to_csv($student_info_arr){
   	}
 
 	fclose($file);
-		
+
 	echo '<br>Fin '.$estado;
 }
 
 	$student_codes_arr = read_student_codes_csv();
 	$list_student = array();
 
-	foreach ($student_codes_arr as $student_cod)
-	{
+	foreach ($student_codes_arr as $student_cod){
 		$info_student = search_student_info($student_cod);
 		array_push($list_student, $info_student);
-
-	}	
+	}
 
 	write_student_information_to_csv($list_student);
-		
 
-?> 
+
+?>
