@@ -1,0 +1,278 @@
+<script type="text/babel">
+  $(document)
+    .ready(function () {
+      formValidation()
+      loadAcademicProgramsAndFaculties()
+      $('.ui.radio.checkbox').checkbox()
+      $('select.dropdown').dropdown()
+      $('.numeric').on('keypress', function (e) {
+                return e.metaKey || // cmd/ctrl
+                    e.which <= 0 || // arrow keys
+                    e.which == 8 || // delete key
+                    /[0-9]/.test(String.fromCharCode(e.which)); // numbers
+            });
+    })
+
+
+
+  function validationpassed(e) {
+    e.preventDefault()
+    var mForm = $('.ui.form')
+    var formData = mForm.serializeArray()
+
+
+    function onSuccess(response) {
+
+      console.log('RESPONSE', response)
+      if (response.ok) {
+        console.log('A nice formatted response', response)
+
+      }else{
+        console.log('You fucked up', response)
+      }
+    }
+
+    console.log(formData)
+    google.script.run.withSuccessHandler(onSuccess).registerPerson(formData)
+  }
+
+  function searchForPerson() {
+    hideForm()
+    $('#btn-search').addClass('loading')
+
+    function onSuccess(person) {
+      if(person){
+        showForm()
+        console.log('A nice formatted person', person)
+        $('#btn-search').removeClass('loading')
+        if (person.isRegistered) {
+          loadPersonInForm(person)
+        }else{
+          var sraPerson = searchPersonInSRA()
+          if(sraPerson){
+            loadSRAPersonInForm(sraPerson)
+          }
+        }
+      }else{
+        console.log('Something went wrong searching user...')
+      }
+    }
+
+    var cedula = $('#busca-cedula').val()
+    if(cedula.length>0){
+      google.script.run.withSuccessHandler(onSuccess).searchPerson(cedula)
+    }else{
+      $('#btn-search').removeClass('loading')
+      $("#search-msg").html('Por favor ingrese una cedula')
+      $("#search-msg").css('display','block')
+    }
+  }
+
+  function disableFormFielfds(bool){
+    if(bool){
+      // $("input:not([name='busca-cedula'])").prop('disabled', true)
+    }else{
+      // $("input:not([name='busca-cedula'])").prop('disabled', false)
+
+    }
+  }
+
+  function loadSRAPersonInForm(person){
+    console.log('Person in form', person)
+
+    $("input[name='nombres']").val(person.data.nombres)
+    $("input[name='apellidos']").val(person.data.apellidos)
+    $("input[name='cedula']").val(person.data.cedula)
+
+    $("input[name='programa']").val(person.data.programa)
+    $("input[name='facultad']").val(person.data.facultad)
+    $("input[name='metodo_pago']").val(person.data["metodo_pago"])
+
+  }
+
+  function loadPersonInForm(person) {
+    console.log('Person in form', person)
+
+    $("input[name='nombres']").val(person.data.nombres)
+    $("input[name='apellidos']").val(person.data.apellidos)
+    $("input[name='cedula']").val(person.data.cedula)
+    $("input[name='correo']").val(person.data.correo)
+    $("input[name='celular']").val(person.data.celular)
+    $("input[name='programa']").val(person.data.programa)
+    $("input[name='facultad']").val(person.data.facultad)
+
+    disableFormFielfds(true)
+  }
+
+
+  function showForm() {
+    $('#mainForm').css('display', 'block')
+    $("input[name='cedula']").val($("#busca-cedula").val())
+    disableFormFielfds(false)
+  }
+
+  function hideForm() {
+    $('#mainForm').css('display', 'none')
+    disableFormFielfds(false)
+    $('.ui.form').form('clear')
+
+  }
+  function loadAcademicProgramsAndFaculties() {
+
+    function onSuccess(result) {
+      console.log('good job', result)
+      if(result){
+        $.each(result.programs, function (i, program) {
+        $("select[name='programa']").append($('<option>', {
+            value: program.nombre,
+            text : program.nombre
+            }));
+        });
+
+        $.each(result.faculties, function (i, faculty) {
+        $("select[name='facultad']").append($('<option>', {
+            value: faculty,
+            text : faculty
+            }));
+        });
+      }
+
+
+          $("select[name='programa']").on('change', function(e){
+            for(var program in result.programs){
+              console.log('VALUE', e)
+              if(e.value == program.name){
+                $("select[name='facultad']").val(program.faculty)
+                $("select[name='facultad']").trigger('change')
+              }
+            }
+          })
+
+          google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms()
+      }
+  }
+
+function searchPersonInSRA(cedula){
+
+  var options = {
+    per_doc_ide_numero: 16825541,
+    wincomboper_doc_ide_numero: 16825541,
+    accion:"Consultar+Grados"
+  }
+  fetch('https://swebse29.univalle.edu.co/sra//paquetes/graduado/index.php', {
+    method: 'post',
+    body: JSON.stringify(options),
+    headers:{
+      'Content-Type': 'applications/x-www-form-urlencoded',
+      'Access-Control-Request-Method': 'POST',
+      'Access-Control-Request-Headers': 'X-Custom-Header',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    }
+  }).then(function(response) {
+    return response.json();
+  }).then(function(data) {
+    console.log('Created Gist:', data);
+  });
+}
+
+function formValidation() {
+    $('.ui.form')
+      .form({
+        inline: true,
+        on: 'blur',
+        transition: 'fade down',
+        onSuccess: validationpassed,
+        fields: {
+          nombres: {
+            identifier: 'nombres',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Por favor ingrese un nombre'
+              }
+            ]
+          },
+          apellidos: {
+            identifier: 'apellidos',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Por favor ingrese un apellido'
+              }
+            ]
+          },
+          cedula: {
+            identifier: 'cedula',
+            rules: [
+              {
+                type: 'number',
+                prompt: 'Por favor ingrese una cedula valido'
+              },
+              {
+                type: 'empty',
+                prompt: 'Por favor ingrese una cedula'
+              }
+            ]
+          },
+          celular: {
+            identifier: 'celular',
+            rules: [
+              {
+                type: 'number',
+                prompt: 'Por favor ingrese un numero valido'
+              },
+              {
+                type: 'empty',
+                prompt: 'Por favor ingrese un numero'
+              }
+            ]
+          },
+          email: {
+            identifier: 'correo',
+            rules: [
+              {
+                type: 'email',
+                prompt: 'Por favor ingrese a correo valido'
+              },
+              {
+                type: 'empty',
+                prompt: 'Por favor ingrese un correo'
+              }
+            ]
+          },
+          programa: {
+            identifier: 'programa',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Por favor ingrese un programa'
+              }
+            ]
+          },
+
+          // expedicion: {
+          //   identifier: 'expedicion',
+          //   rules: [
+          //     {
+          //       type: 'empty',
+          //       prompt: 'Por favor ingrese una expedicion'
+          //     }
+          //   ]
+          // },
+          facultad: {
+            identifier: 'facultad',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Por favor ingrese una facultad'
+              }
+            ]
+          },
+        }
+      })
+  }
+
+
+
+
+    </script>

@@ -23,7 +23,7 @@ function getRawDataFromSheet(url, sheet) {
 function getPrograms() {
     var programsSheet = getRawDataFromSheet(PROGRAMAS, "PROGRAMAS")
     var programsObjects = sheetValuesToObject(programsSheet)
-    logFunctionOutput(getPrograms, programsObjects)
+    // logFunctionOutput(getPrograms, programsObjects)
     return programsObjects
 }
 
@@ -43,11 +43,18 @@ function searchPerson(cedula) {
 
 
 function registerPerson(person) {
-    var inscritosSheet = getSheetFromSpreadSheet(GENERAL_DB, "INSCRITOS")
-    var headers = inscritosSheet.getSheetValues(1, 1, 1, inscritosSheet.getLastColumn())[0]
+    var inscritosSheet = getSheetFromSpreadSheet(GENERAL_DB, "INSCRITOS");
+    var headers = inscritosSheet.getSheetValues(1, 1, 1, inscritosSheet.getLastColumn())[0];
+    person.push({ name: "hora_registro", value: new Date() })
+    person.push({ name: "comprobado", value: "NO" })
     var personValues = objectToSheetValues(person, headers)
-
-    inscritosSheet.appendRow(personValues)
+    var finalValues = personValues.map(function (value) {
+        return String(value)
+    })
+    inscritosSheet.appendRow(finalValues)
+    var result = { data: finalValues, ok: true }
+    logFunctionOutput(registerPerson.name, result)
+    return result;
 }
 
 function getFacultiesAndPrograms() {
@@ -57,13 +64,22 @@ function getFacultiesAndPrograms() {
     }
     var programs = getPrograms()
     var lastPrograms = []
+    var esta = false
 
     for (var program in programs) {
-        if (lastPrograms.indexOf(programs[program].nombre) < 0) {
-            lastPrograms.push(programs[program].nombre)
+        for (var last in lastPrograms) {
+          Logger.log(programs[program].nombre + "&" + last.nombre)
+            if (String(programs[program].nombre) === String(lastPrograms[last].nombre)) {
+                esta = true
+                break
+            } else {
+              esta = false
+             }
+        }
+        if (!esta) {
+          lastPrograms.push(programs[program])
         }
     }
-
     result.faculties = getFacultiesFromPrograms(programs)
     result.programs = lastPrograms
     return result
@@ -117,17 +133,27 @@ function validatePerson(cedula) {
 
 function objectToSheetValues(object, headers) {
     var arrayValues = new Array(headers.length)
+    var lowerHeaders = headers.map(function (item) {
+        return item.toLowerCase()
+    })
+
     Logger.log('HEADERS')
-    Logger.log(headers)
+    Logger.log(lowerHeaders)
     Logger.log('OBJECT')
     Logger.log(object)
-    for(var item in object){
-        for (var header in headers) {
-            if (String(object[item].name) == String(headers[header]).toLowerCase()) {
-                arrayValues[header] = object[item[header].toLowerCase()]
+    for (var item in object) {
+        for (var header in lowerHeaders) {
+            if (String(object[item].name) == String(lowerHeaders[header])) {
+                if (object[item].name == "nombres" || object[item].name == "apellidos") {
+                    arrayValues[header] = object[item].value.toUpperCase()
+                    Logger.log(arrayValues)
+                } else {
+                    arrayValues[header] = object[item].value
+                    Logger.log(arrayValues)
+                }
             }
         }
-    
+
     }
 
     logFunctionOutput(objectToSheetValues.name, arrayValues)
@@ -162,3 +188,29 @@ function logFunctionOutput(functionName, returnValue) {
     Logger.log("----------------------------------")
 }
 
+function sheetValuesToObject(sheetValues) {
+    var headings = sheetValues[0].map(String.toLowerCase);
+    var people = sheetValues.slice(1);
+    var peopleWithHeadings = addHeadings(people, headings);
+
+    function addHeadings(people, headings) {
+        return people.map(function (personAsArray) {
+            var personAsObj = {};
+
+            headings.forEach(function (heading, i) {
+                personAsObj[heading] = personAsArray[i];
+            });
+
+            return personAsObj;
+        });
+    }
+    logFunctionOutput(sheetValuesToObject.name, peopleWithHeadings)
+    return peopleWithHeadings;
+}
+
+function logFunctionOutput(functionName, returnValue) {
+    Logger.log("Function-------->" + functionName)
+    Logger.log("Value------------>")
+    Logger.log(returnValue)
+    Logger.log("----------------------------------")
+}

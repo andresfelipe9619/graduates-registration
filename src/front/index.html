@@ -10,16 +10,20 @@
         }
 
         #navbar {
-            margin-bottom: 100px;
+            margin-bottom: 60px;
         }
 
 
         .main.container {
-            margin-top: 50px;
+            margin: 50px 0px 0px 20px;
         }
 
-        input:not([name='email']) {
+        input:not([name='correo']) {
             text-transform: uppercase
+        }
+
+        input[name='correo']{
+            text-transform: lowercase
         }
 
         ::placeholder {
@@ -31,7 +35,7 @@
         }
 
         #id-search {
-            margin-top: 50px;
+            margin: 50px 0px -50px 20px;
         }
     </style>
 </head>
@@ -48,31 +52,31 @@
     <div class="ui main container">
         <!-- <h1 class="ui header red">Noche de Gala Egresados 2018</h1> -->
         <div class="ui middle center grid">
+          <div class="row">
+            <h2>Formulario de Inscripcion</h2>
+
+          </div>
             <div class="row" id="id-search">
                 <div class="ui action input large">
-                    <input id="cedula" placeholder="Buscar Cedula..." type="text">
+                    <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Consulte su cédula..." type="text">
                     <button id="btn-search" class="ui icon button" onclick="searchForPerson()">
                         <i class="search icon"></i>
                     </button>
                 </div>
+                <div id="search-msg" class="ui message hidden"></div>
             </div>
             <div class="row">
-
-
                 <div id="mainForm" class="ten wide center column">
-                    <h2 class="ui image header">
-                        <img src="http://www.univalle.edu.co/images/logo-footer.png" class="logo">
-                        <div class="content">
-                            Por favor Ingrese Sus Datos En El Siguiente Formulario
-                        </div>
-                    </h2>
+
                     <form class="ui form segment">
+                        <div class="ui error message"></div>
+                        <div class="ui success message">Damn!, you have been selected for a free blunt!</div>
                         <h4 class="ui dividing header">Informacion General</h4>
                         <div class="field">
                             <div class="fields">
                                 <div class="sixteen wide field">
                                     <label>Numero de Cédula</label>
-                                    <input name="cedula" placeholder="Numero de documento" type="text">
+                                    <input class="numeric" name="cedula" placeholder="Numero de documento" type="text">
                                 </div>
                                 <!-- <div class="four wide field">
                                 <label>Ciudad Expedicion</label>
@@ -98,11 +102,11 @@
                         <div class="fields">
                             <div class="twelve wide field">
                                 <label>Correo Electrónico</label>
-                                <input name="email" placeholder="Correo Electronico" type="text">
+                                <input name="correo" placeholder="Correo Electronico" type="text">
                             </div>
                             <div class="four wide field">
                                 <label>Télefono Celular</label>
-                                <input name="celular" placeholder="Telefono" type="text">
+                                <input name="celular" class="numeric" placeholder="Telefono" type="text">
                             </div>
                         </div>
 
@@ -124,28 +128,28 @@
                         <h4 class="ui dividing header">Informacion de Pago</h4>
 
                         <div class="fourteen wide inline fields">
-                            <label for="metodo_pago">Seleccione su metodo de pago:
+                            <p>El pago se ralizara por medio de PSE. Despues de haber realizado su registro exitoso le aprecera un enlace a la pasarela de pagos</p>
+                            <!-- <label for="metodo_pago">Seleccione su metodo de pago:
                             </label>
                             <div class="field">
                                 <div class="ui radio checkbox">
-                                    <input name="metodo_pago" checked="" tabindex="0" class="hidden" type="radio">
+                                    <input name="metodo_pago" value="PSE" checked="" tabindex="0" class="hidden" type="radio">
                                     <label>PSE</label>
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui radio checkbox">
-                                    <input name="metodo_pago" tabindex="0" class="hidden" type="radio">
+                                    <input name="metodo_pago" value="CONSIGNACION" tabindex="0" class="hidden" type="radio">
                                     <label>Consignacion</label>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
-                        <div class="field">
+                        <!-- <div class="field">
                             <input type="file" (change)="fileEvent($event)" class="inputfile" id="embedpollfileinput" />
-                        </div>
+                        </div> -->
 
-                        <div class="ui submit button" tabindex="0">Enviar</div>
-                        <div class="ui error message"></div>
-                        <div class="ui success message">Damn!, you have been selected for a free blunt!</div>
+                        <div class="ui submit button" tabindex="0">Realizar Pago</div>
+
                     </form>
 
                 </div>
