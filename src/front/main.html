@@ -3,7 +3,6 @@ $(document).ready(init_js)
 
 function init_js(){
   formValidation()
-  console.log('hollllalalalalal')
   loadAcademicProgramsAndFaculties()
   $('.ui.radio.checkbox').checkbox()
   $('select.dropdown').dropdown()
@@ -34,7 +33,8 @@ function validationpassed(e) {
   function onSuccess(response) {
     console.log('RESPONSE', response)
     if (response.ok) {
-      console.log('A nice formatted response', response)
+      disableFormFielfds(false)
+      $('.ui.form').form('clear')
     }else{
       console.log('You fucked up', response)
     }
@@ -83,18 +83,52 @@ function disableFormFielfds(bool){
     $("input:not([name='busca-cedula'])").prop('disabled', false)
   }
 }
+var normalize = (function() {
+  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç",
+      to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
+      mapping = {};
+
+  for(var i = 0, j = from.length; i < j; i++ )
+      mapping[ from.charAt( i ) ] = to.charAt( i );
+
+  return function( str ) {
+      var ret = [];
+      for( var i = 0, j = str.length; i < j; i++ ) {
+          var c = str.charAt( i );
+          if( mapping.hasOwnProperty( str.charAt( i ) ) )
+              ret.push( mapping[ c ] );
+          else
+              ret.push( c );
+      }
+      return ret.join( '' );
+  }
+
+})();
 
 function loadSRAPersonInForm(person){
   console.log('Person in form', person)
+  var full_name = person.nombre.split(" ");
 
-  $("input[name='nombres']").val(person.data.nombres)
-  $("input[name='apellidos']").val(person.data.apellidos)
-  $("input[name='cedula']").val(person.data.cedula)
+  $("input[name='nombres']").val(full_name[2]+ ' ' + (full_name[3]!=null? full_name[3]:''))
+  $("input[name='apellidos']").val(full_name[0] + ' '+full_name[1])
+  $("input[name='cedula']").prop('disabled',true)
+  $("input[name='nombres']").prop('disabled',true)
+  $("input[name='apellidos']").prop('disabled',true)
 
-  $("input[name='programa']").val(person.data.programa)
-  $("input[name='facultad']").val(person.data.facultad)
-  // $("input[name='metodo_pago']").val(person.data["metodo_pago"])
-
+  if(person.titulo){
+    function onSuccess(result){
+      if(result){
+        $.each(result.programs, function (i, program) {
+          if(normalize(person.titulo).includes(String(program["titulo_otorgado"]))>0){
+            $("select[name='programa']").dropdown('set selected', program.nombre)
+            $(".dropdown").dropdown()
+            $(".ui.dropdown").addClass('disabled')
+          }
+        });
+      }
+    }
+    google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms()
+  }
 }
 
 function loadPersonInForm(person) {
@@ -105,8 +139,10 @@ function loadPersonInForm(person) {
   $("input[name='cedula']").val(person.data.cedula)
   $("input[name='correo']").val(person.data.correo)
   $("input[name='celular']").val(person.data.celular)
-  $("input[name='programa']").val(person.data.programa)
-  $("input[name='facultad']").val(person.data.facultad)
+  $("select[name='programa']").dropdown('set selected',person.data.programa)
+  $("select[name='programa']").addClass('disabled')
+  $("select[name='facultad']").dropdown('set selected', person.data.facultad)
+  $("select[name='facultad']").addClass('disabled')
 
   disableFormFielfds(true)
 }
@@ -159,15 +195,27 @@ function loadAcademicProgramsAndFaculties() {
 
 function searchPersonInSRA(cedula){
 
-  var options = {
-    documento: 16825541,
-
-  }
-  fetch('https://localhost/test/hello.php').then(function(response) {
-    return response.json();
-  }).then(function(data) {
-    console.log('Created Gist:', data);
-  });
+  // fetch('https://arzayus.co/egresados-script.php',{
+  //   method:'post',
+  //   body:`cedula=${cedula}`,
+  //   headers:{
+  //     'Content-Type': 'application/x-www-form-urlencoded'
+  //   }
+  // }).then(function(response) {
+  //   return response.json();
+  // }).then(function(data) {
+  //   console.log('Created Gist:', data);
+  //   if(data){
+  //     return {
+  //       "nombre": "RAMIREZ TORRES SAMUEL",
+  //       "titulo": "TECNÓLOGO EN SISTEMAS DE INFORMACIÓN "
+  //     };
+  //   }else return null;
+  // });
+  return {
+    "nombre": "ABONIA GONZALEZ RODRIGO",
+    "titulo": "TECNOLOGO ESPECIALIZADO EN QUIMICA CON ENFASIS EN TECNICAS MODERNAS DE ANALISIS INSTRUMENTAL"
+  };
 }
 
 function formValidation() {
