@@ -40,7 +40,6 @@ function searchPerson(cedula) {
     return person
 }
 
-
 function registerPerson(person) {
     var inscritosSheet = getSheetFromSpreadSheet(GENERAL_DB, "INSCRITOS");
     var headers = inscritosSheet.getSheetValues(1, 1, 1, inscritosSheet.getLastColumn())[0];
@@ -56,18 +55,18 @@ function registerPerson(person) {
     return result;
 }
 
+function getSRAPerson(cedula) {
 
-function getSRAPerson(cedula){
+    var options = {
+        'method': 'post',
+        'contentType': 'application/x-www-form-urlencoded',
+        'payload': 'cedula=' + cedula,
+        'validateHttpsCertificates': false
+    }
+    var result = UrlFetchApp.fetch('http://arzayus.co/egresados-script.php', options).getContentText();
+    logFunctionOutput(getSRAPerson.name, result)
 
-  var options = {
-  'method' : 'post',
-  'contentType': 'application/x-www-form-urlencoded',
-  'payload' : 'cedula='+cedula,
-  'validateHttpsCertificates': false
-};
-  var result = UrlFetchApp.fetch('http://arzayus.co/egresados-script.php', options);
-  logFunctionOutput(getSRAPerson.name, result);
-  return result.getContentText();
+    return result;
 }
 
 function getFacultiesAndPrograms() {
@@ -85,11 +84,11 @@ function getFacultiesAndPrograms() {
                 esta = true
                 break
             } else {
-              esta = false
-             }
+                esta = false
+            }
         }
         if (!esta) {
-          lastPrograms.push(programs[program])
+            lastPrograms.push(programs[program])
         }
     }
     result.faculties = getFacultiesFromPrograms(programs)
@@ -110,8 +109,6 @@ function getFacultiesFromPrograms(programs) {
 
     return faculties
 }
-
-
 
 function validatePerson(cedula) {
     var inscritos = getPeopleRegistered();
@@ -173,7 +170,6 @@ function objectToSheetValues(object, headers) {
     return arrayValues
 }
 
-
 function sheetValuesToObject(sheetValues) {
     var headings = sheetValues[0].map(String.toLowerCase);
     var people = sheetValues.slice(1);
@@ -190,7 +186,7 @@ function sheetValuesToObject(sheetValues) {
             return personAsObj;
         });
     }
-   // logFunctionOutput(sheetValuesToObject.name, peopleWithHeadings)
+    // logFunctionOutput(sheetValuesToObject.name, peopleWithHeadings)
     return peopleWithHeadings;
 }
 

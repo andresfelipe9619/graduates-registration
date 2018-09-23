@@ -64,7 +64,8 @@
         console.log('Something went wrong searching user...')
       }
     }
-      var cedula = $('#busca-cedula').val()
+    
+    var cedula = $('#busca-cedula').val()
     if(cedula.length>0){
       google.script.run.withSuccessHandler(onSuccess).searchPerson(cedula)
     }else{
@@ -129,7 +130,6 @@
             }
           });
         }
-        $('.ui.form').removeClass('loading')
       }
       google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms()
     }
@@ -198,16 +198,20 @@
   }
   
   function searchPersonInSRA(cedula){
-   console.log('ced job', cedula)
+
     function onSuccess(result) {
       console.log('good job', result)
       if(result){
-      
-      loadSRAPersonInForm(JSON.parse(result))
-      }else return null;
+        var resultObject = JSON.parse(result)
+        if (resultObject.titulo.length > 0 && resultObject.nombre.length > 0) {
+          loadSRAPersonInForm(resultObject)
+          }
+        }else return null;
+
+        $('.ui.form').removeClass('loading')
       }
-    google.script.run.withSuccessHandler(onSuccess).getSRAPerson(cedula);
-  
+
+     google.script.run.withSuccessHandler(onSuccess).getSRAPerson(cedula)
   }
   
   function formValidation() {
@@ -285,15 +289,15 @@
           ]
         },
   
-        // expedicion: {
-        //   identifier: 'expedicion',
-        //   rules: [
-        //     {
-        //       type: 'empty',
-        //       prompt: 'Por favor ingrese una expedicion'
-        //     }
-        //   ]
-        // },
+        politicas: {
+          identifier: 'politicas',
+          rules: [
+            {
+              type: 'empty',
+              prompt: 'Por favor acepte nuestras politicas para inscribirse'
+            }
+          ]
+        },
         facultad: {
           identifier: 'facultad',
           rules: [
@@ -307,8 +311,4 @@
     })
   }
   
-  
-  
-  
   </script>
-  
