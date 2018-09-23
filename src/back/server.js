@@ -56,6 +56,20 @@ function registerPerson(person) {
     return result;
 }
 
+
+function getSRAPerson(cedula){
+
+  var options = {
+  'method' : 'post',
+  'contentType': 'application/x-www-form-urlencoded',
+  'payload' : 'cedula='+cedula,
+  'validateHttpsCertificates': false
+};
+  var result = UrlFetchApp.fetch('http://arzayus.co/egresados-script.php', options);
+  logFunctionOutput(getSRAPerson.name, result);
+  return result.getContentText();
+}
+
 function getFacultiesAndPrograms() {
     var result = {
         faculties: null,
@@ -80,7 +94,7 @@ function getFacultiesAndPrograms() {
     }
     result.faculties = getFacultiesFromPrograms(programs)
     result.programs = lastPrograms
-    logFunctionOutput(getFacultiesAndPrograms.name, result)
+    //logFunctionOutput(getFacultiesAndPrograms.name, result)
     return result
 }
 
@@ -155,7 +169,7 @@ function objectToSheetValues(object, headers) {
 
     }
 
-    logFunctionOutput(objectToSheetValues.name, arrayValues)
+    //logFunctionOutput(objectToSheetValues.name, arrayValues)
     return arrayValues
 }
 
@@ -176,7 +190,7 @@ function sheetValuesToObject(sheetValues) {
             return personAsObj;
         });
     }
-    logFunctionOutput(sheetValuesToObject.name, peopleWithHeadings)
+   // logFunctionOutput(sheetValuesToObject.name, peopleWithHeadings)
     return peopleWithHeadings;
 }
 
@@ -187,29 +201,3 @@ function logFunctionOutput(functionName, returnValue) {
     Logger.log("----------------------------------")
 }
 
-function sheetValuesToObject(sheetValues) {
-    var headings = sheetValues[0].map(String.toLowerCase);
-    var people = sheetValues.slice(1);
-    var peopleWithHeadings = addHeadings(people, headings);
-
-    function addHeadings(people, headings) {
-        return people.map(function (personAsArray) {
-            var personAsObj = {};
-
-            headings.forEach(function (heading, i) {
-                personAsObj[heading] = personAsArray[i];
-            });
-
-            return personAsObj;
-        });
-    }
-    logFunctionOutput(sheetValuesToObject.name, peopleWithHeadings)
-    return peopleWithHeadings;
-}
-
-function logFunctionOutput(functionName, returnValue) {
-    Logger.log("Function-------->" + functionName)
-    Logger.log("Value------------>")
-    Logger.log(returnValue)
-    Logger.log("----------------------------------")
-}
