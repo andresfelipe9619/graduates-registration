@@ -1,12 +1,19 @@
 <script type="text/babel">
   $(document).ready(init_js)
+  var buttonpressed;
   
   function init_js(){
+    $('.submit.button').click(function() {
+          buttonpressed = $(this).attr('name')
+    })
     formValidation()
     loadAcademicProgramsAndFaculties()
     $('.ui.radio.checkbox').checkbox()
     $('select.dropdown').dropdown()
-    $('.ui.modal').modal({blurring: true})
+    $('.ui.modal').modal()
+    $('.ui.modal').modal({
+      blurring: true, 
+      centered:true})
     // $('#submit-btn').on('click',)
     $('.numeric').on('keypress', function (e) {
       return e.metaKey || // cmd/ctrl
@@ -27,15 +34,24 @@
   
   function validationpassed(e) {
     e.preventDefault()
+    console.log('pressed', buttonpressed)
     var mForm = $('.ui.form')
     var formData = mForm.serializeArray()
     console.log(formData)
     mForm.addClass('loading')
+
     function onSuccess(response) {
       if (response.ok) {
         $('.ui.form').removeClass('loading')
         disableFormFielfds(false)
         $('.ui.form').form('clear')
+
+        if(buttonpressed == 'submit-btn'){
+          $('.ui.success.message').text('Su inscripción fue realizada de manera exitosa, Recuerde Generar el pago lo antes posible para reservar su cupo en nuestra cena de gala Egresados 2018')
+          $('.ui.modal').modal('show')
+        }else{
+          $('.ui.modal').modal('show')
+        }
       }else{
         console.log('You fucked up', response)
       }
@@ -125,8 +141,9 @@
     if(person.titulo){
     
     var femenine = person.titulo.indexOf(' ')-1;
-    
-    person.titulo = person.titulo.substr(0, femenine) + 'O' + person.titulo.substr(femenine + 1)
+    if(femenine == 'A'){
+      person.titulo = person.titulo.substr(0, femenine) + 'O' + person.titulo.substr(femenine + 1)
+    }
       function onSuccess(result){
         if(result){
           $.each(result.programs, function (i, program) {
