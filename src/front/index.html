@@ -36,10 +36,12 @@
     margin-top: 50px;
   }
   .not-allowed {
-    cursor: not-allowed;
+    cursor: not-allowed  !important;;
     }
 
-
+.ui.disabled.dropdown, .ui.dropdown .menu>.disabled.item{
+  opacity:0.8 !important;
+  }
   </style>
 </head>
 
@@ -73,9 +75,7 @@
 
         <form class="ui form attached fluid segment">
           <div class="ui error message"></div>
-          <div class="ui success message">Apreciado Egresado, su inscripción ha sido registrada, para realizar el pago,
-            por favor dar clic en el botón <a id="#link-pse" href="">ENLACE PORTAL DE PAGOS.</a> En un lapso de máximo
-            de 36 horas sera notificado de que el pago de su incirpción fue debidamente registrado.</div>
+
           <h4 class="ui dividing header">Información General</h4>
           <div class="field">
             <div class="fields">
@@ -124,20 +124,36 @@
           </div>
           <br>
           <div class="field">
-              <div class="ui checkbox">
-                <input name="politicas" checked="" tabindex="0" class="hidden" type="checkbox">
-                <label>Acepto las <a href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf">Políticas de tratamiento de datos de la Universidad del Valle</a></label>
-              </div>
-          </div>
-          <div id="submit-btn" class="ui submit button">Registrar Incripción</div>
-          <div id="submit-btn" class="ui red submit button">Registrar Incripción y Generar Pago</div>
-        </form>
-      
-            <div id="pay-info" class="ui bottom attached warning message">
-              <i class="icon help"></i>
-            El pago se ralizara por medio de PSE. Despues de haber realizado su registro exitoso le aprecera un
-                enlace a la pasarela de pagos
+            <div class="ui checkbox">
+              <input name="politicas" type="checkbox">
+              <label>Acepto las <a href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf">Políticas
+                  de tratamiento de datos de la Universidad del Valle</a></label>
             </div>
+          </div>
+          <div id="submit-btn" class="ui button">Registrar Incripción</div>
+          <div id="submit-pay-btn" class="ui red submit button">Registrar Incripción y Generar Pago</div>
+        </form>
+
+        <div id="pay-info" class="ui bottom attached warning message">
+          <i class="icon help"></i>
+          El pago se ralizara por medio de PSE. Despues de haber realizado su registro exitoso le aprecera un
+          enlace a la pasarela de pagos
+        </div>
+      </div>
+      <div class="ui small modal">
+        <i class="close icon"></i>
+        <div class="header">
+          Usuario registrado satisfactoriamente!
+        </div>
+        <div class="content">
+          <div class="ui success message">Apreciado Egresado, su inscripción ha sido registrada, para realizar el pago,
+            por favor dar clic en el botón <a id="#link-pse" href="">ENLACE PORTAL DE PAGOS.</a> En un lapso de máximo
+            de 36 horas sera notificado de que el pago de su incirpción fue debidamente registrado.</div>
+        </div>
+        <div class="actions">
+          <div class="ui button">Cancel</div>
+          <div class="ui button">OK</div>
+        </div>
       </div>
     </div>
   </div>

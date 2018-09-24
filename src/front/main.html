@@ -6,6 +6,8 @@
     loadAcademicProgramsAndFaculties()
     $('.ui.radio.checkbox').checkbox()
     $('select.dropdown').dropdown()
+    $('.ui.modal').modal({blurring: true})
+    // $('#submit-btn').on('click',)
     $('.numeric').on('keypress', function (e) {
       return e.metaKey || // cmd/ctrl
       e.which <= 0 || // arrow keys
@@ -78,9 +80,11 @@
   
   function disableFormFielfds(bool){
     if(bool){
-      $("input:not([name='busca-cedula'])").prop('disabled', true)
+      $("input:not([name='busca-cedula'])").prop('readonly', true)
+      $("input:not([name='busca-cedula'])").addClass('not-allowed')
     }else{
-      $("input:not([name='busca-cedula'])").prop('disabled', false)
+      $("input:not([name='busca-cedula'])").prop('readonly', false)
+      $("input:not([name='busca-cedula'])").removeClass('not-allowed')
     }
   }
   var normalize = (function() {
@@ -110,10 +114,14 @@
     var full_name = person.nombre.split(" ");
     $("input[name='nombres']").val(full_name[2]+ ' ' + (full_name[3]!=null? full_name[3]:''))
     $("input[name='apellidos']").val(full_name[0] + ' '+full_name[1])
-    $("input[name='cedula']").addClass('disabled')
-    $("input[name='nombres']").addClass('disabled')
-    $("input[name='apellidos']").addClass('disabled')
-  
+    $("input[name='cedula']").prop('readonly', true)
+    $("input[name='cedula']").addClass('not-allowed')
+    $("input[name='nombres']").prop('readonly', true)
+    $("input[name='nombres']").addClass('not-allowed')
+    $("input[name='apellidos']").prop('readonly', true)
+    $("input[name='apellidos']").addClass('not-allowed')
+    $("input[name='politicas']").prop('checked', true)
+
     if(person.titulo){
     
     var femenine = person.titulo.indexOf(' ')-1;
@@ -126,7 +134,7 @@
               $("select[name='programa']").dropdown('set selected', program.nombre)
               $(".dropdown").dropdown()
               $(".ui.dropdown").addClass('disabled')
-              
+              $(".ui.dropdown").addClass('not-allowed')
             }
           });
         }
@@ -146,7 +154,10 @@
     $("select[name='programa']").dropdown('set selected',person.data.programa)
     $("select[name='facultad']").dropdown('set selected', person.data.facultad)
     $(".ui.dropdown").addClass('disabled')
+    $(".ui.dropdown").addClass('not-allowed')
     $('#submit-btn').addClass('disabled')
+    $('#submit-pay-btn').addClass('disabled')
+    $("input[name='politicas']").prop('checked', true)
     disableFormFielfds(true)
   }
   
@@ -293,7 +304,7 @@
           identifier: 'politicas',
           rules: [
             {
-              type: 'empty',
+              type: 'checked',
               prompt: 'Por favor acepte nuestras politicas para inscribirse'
             }
           ]
