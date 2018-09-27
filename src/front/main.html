@@ -1,7 +1,7 @@
 <script type="text/babel">
   $(document).ready(init_js)
   var buttonpressed;
-  
+  var personIndex;
   function init_js(){
     $('.submit.button').click(function() {
           buttonpressed = $(this).attr('name')
@@ -34,11 +34,32 @@
   
   function validationpassed(e) {
     e.preventDefault()
-    console.log('pressed', buttonpressed)
     var mForm = $('.ui.form')
     var formData = mForm.serializeArray()
     console.log(formData)
     mForm.addClass('loading')
+
+    if(buttonpressed == 'submit-btn'){
+      formData.push({name: 'pago_generado', value: 'NO'})
+    }else if(buttonpressed == 'submit-pay-btn'){
+      formData.push({name: 'pago_generado', value: 'SI'})
+    }
+
+    var index_vegana = -1;
+    var vegana = formData.find((field, index)=>{
+      index_vegana = index;
+      return field.name == 'cena_vegana'
+    })
+    console.log(vegana)
+    if(index_vegana > -1 && vegana){
+      if(formData[index_vegana].value == 'on'){
+      formData[index_vegana].value = 'SI'
+      }else{
+      formData[index_vegana].value = 'NO'
+      }
+    }else{
+      formData.push({name: 'cena_vegana', value:'NO'})
+    }
 
     function onSuccess(response) {
       if (response.ok) {
@@ -47,19 +68,16 @@
         $('.ui.form').form('clear')
 
         if(buttonpressed == 'submit-btn'){
-          $('.ui.success.message').text('Su inscripción fue realizada de manera exitosa, Recuerde Generar el pago lo antes posible para reservar su cupo en nuestra cena de gala Egresados 2018')
-          $('.ui.modal').modal('show')
-        }else{
-          $('.ui.modal').modal('show')
+          $('.ui.success.message').text('Su inscripción fue realizada de manera exitosa, Recuerde Generar el pago lo antes posible para reservar su cupo en nuestra cena de gala Egresados 2018. Después de pasadas 48 horas, su inscripción será eliminada.')
         }
+        $('.ui.modal').modal('show')
+
       }else{
         console.log('You fucked up', response)
       }
     }
   
-      
       google.script.run.withSuccessHandler(onSuccess).registerPerson(formData)
-  
   }
   
   function searchForPerson() {
@@ -136,22 +154,25 @@
     $("input[name='nombres']").addClass('not-allowed')
     $("input[name='apellidos']").prop('readonly', true)
     $("input[name='apellidos']").addClass('not-allowed')
-    $("input[name='politicas']").prop('checked', true)
+    $("input[name='my-file']").addClass('not-visible')
 
-    if(person.titulo){
+    // $("input[name='politicas']").prop('checked', true)
+
+    if(person.titulo.length>0){
+    var first = person.titulo[person.titulo.length -1]
     
-    var femenine = person.titulo.indexOf(' ')-1;
+    var femenine = first.indexOf(' ')-1;
     if(femenine == 'A'){
-      person.titulo = person.titulo.substr(0, femenine) + 'O' + person.titulo.substr(femenine + 1)
+      person.titulo[person.titulo.length -1] = first.substr(0, femenine) + 'O' + person.titulo.substr(femenine + 1)
     }
       function onSuccess(result){
         if(result){
           $.each(result.programs, function (i, program) {
-            if(normalize(person.titulo).includes(String(program["titulo_otorgado"]))>0){
+            if(normalize(person.titulo[person.titulo.length -1]).includes(String(program["titulo_otorgado"]))>0){
               $("select[name='programa']").dropdown('set selected', program.nombre)
               $(".dropdown").dropdown()
               $(".ui.dropdown").addClass('disabled')
-              $(".ui.dropdown").addClass('not-allowed')
+              $(".fields.regreso").addClass('not-allowed')
             }
           });
         }
@@ -159,9 +180,25 @@
       google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms()
     }
   }
+
+  function submitPayment(){
+    $('#register-pay-btn').addClass('loading')
+
+    if(personIndex > -1){ 
+      function onSuccess(result) {
+        if (result) {
+          $('.ui.modal').modal('show')
+          console.log('result', result);
+        }
+        $('#register-pay-btn').removeClass('loading')
+      }
+      google.script.run.withSuccessHandler(onSuccess).generatePayment(personIndex)
+    }
+  }
   
   function loadPersonInForm(person) {
     console.log('Person in form', person)
+    personIndex = Number(person.index)+1;
     $('.ui.form').removeClass('loading')
     $("input[name='nombres']").val(person.data.nombres)
     $("input[name='apellidos']").val(person.data.apellidos)
@@ -170,10 +207,19 @@
     $("input[name='celular']").val(person.data.celular)
     $("select[name='programa']").dropdown('set selected',person.data.programa)
     $("select[name='facultad']").dropdown('set selected', person.data.facultad)
+    if (person.data["cena_vegana"] == 'SI') {
+    $("input[name='cena_vegana']").prop('checked', true)      
+    } else {
+    $("input[name='cena_vegana']").prop('checked', false)      
+    }
     $(".ui.dropdown").addClass('disabled')
-    $(".ui.dropdown").addClass('not-allowed')
-    $('#submit-btn').addClass('disabled')
-    $('#submit-pay-btn').addClass('disabled')
+    $(".fields.regreso").addClass('not-allowed')
+    $("input[name='my-file']").addClass('not-visible')
+    $('#submit-btn').addClass('not-visible')
+    $('#submit-pay-btn').addClass('not-visible')
+    if (person.data["pago_generado"] == 'NO') {
+      $('#register-pay-btn').addClass('visible')
+    }
     $("input[name='politicas']").prop('checked', true)
     disableFormFielfds(true)
   }
@@ -190,8 +236,8 @@
     $('#mainForm').css('display', 'none')
     disableFormFielfds(false)
     $('.ui.form').form('clear')
-  
   }
+  
   function loadAcademicProgramsAndFaculties() {
   
     function onSuccess(result) {
@@ -234,8 +280,7 @@
         if (resultObject.titulo.length > 0 && resultObject.nombre.length > 0) {
           loadSRAPersonInForm(resultObject)
           }
-        }else return null;
-
+        }
         $('.ui.form').removeClass('loading')
       }
 

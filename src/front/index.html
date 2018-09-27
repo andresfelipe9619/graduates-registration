@@ -6,11 +6,10 @@
   <meta http-equiv="Content-Security-Policy" content="connect-src http:">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
   <style>
-    img-src domain.example.com
-  #navbar {
+
+    #navbar {
     margin-bottom: 60px;
   }
-
 
   #main-content {
     margin-top: 100px ;
@@ -21,7 +20,7 @@
   }
 
   input[name='correo']{
-    text-transform: lowercase
+    text-transform: lowercase;
   }
 
   ::placeholder {
@@ -34,7 +33,7 @@
   .ui.modal{
     position: fixed !important;
     top: 40% !important;
-    left:10% !important;
+    left: 20% !important;
   }
 
   #id-search {
@@ -43,6 +42,14 @@
   .not-allowed {
     cursor: not-allowed  !important;
     }
+
+  .not-visible{
+    display: none !important;
+  }
+
+  .visible{
+    display: block !important;
+  }
 
 .ui.disabled.dropdown, .ui.dropdown .menu>.disabled.item{
   opacity:0.8 !important;
@@ -67,7 +74,7 @@
           <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Ingrese su numero de cédula..."
             type="text">
           <button id="btn-search" tabindex="0" class="ui red button" onclick="searchForPerson()">
-            <!-- <i class="search icon"></i> -->Continuar
+            Continuar
           </button>
         </div>
       </div>
@@ -91,7 +98,20 @@
             </div>
           </div>
 
-          <div class="fields">
+          <div class="field">
+            <div class="two fields">
+              <div class="field">
+                <label>Nombres</label>
+                <input name="nombres" placeholder="Nombres" type="text">
+              </div>
+              <div class="field">
+                <label>Apellidos</label>
+                <input name="apellidos" placeholder="Apellidos" type="text">
+              </div>
+            </div>
+          </div>
+
+          <div class="fields regreso">
             <div class="ten wide field">
               <label>Programa Académico del Cual Egresó</label>
               <select name="programa" class="ui dropdown search">
@@ -114,21 +134,18 @@
               <input name="celular" class="numeric" placeholder="Telefono" type="text">
             </div>
           </div>
-
           <div class="field">
-            <div class="two fields">
-              <div class="field">
-                <label>Nombres</label>
-                <input name="nombres" placeholder="Nombres" type="text">
-              </div>
-              <div class="field">
-                <label>Apellidos</label>
-                <input name="apellidos" placeholder="Apellidos" type="text">
-              </div>
+            <div class="ui checkbox">
+              <input name="cena_vegana" type="checkbox">
+              <label>Prefiero cena vegana</label>
             </div>
           </div>
-          <br>
           <div class="field">
+            <label for="my-file">Documento de validez que es Egresado(carnet, acta de grado, diploma).</label>
+            <input type="file" id="my-file" name="my-file" />
+          </div>
+          <br>
+          <div class="field hidden content">
             <div class="ui checkbox">
               <input name="politicas" type="checkbox">
               <label>Acepto las <a href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf">Políticas
@@ -136,14 +153,10 @@
             </div>
           </div>
           <div id="submit-btn" name="submit-btn" class="ui submit button">Registrar Incripción</div>
-          <div id="submit-pay-btn" name="submit-pay-btn" class="ui red submit button">Registrar Incripción y Generar Pago</div>
+          <div id="submit-pay-btn" name="submit-pay-btn" class="ui red submit button">Registrar Incripción y
+            GenerarPago</div>
+          <div id="register-pay-btn" name="register-pay-btn" onclick="submitPayment()" class="ui red not-visible button">GenerarPago</div>
         </form>
-
-        <div id="pay-info" class="ui bottom attached warning message">
-          <i class="icon help"></i>
-          El pago se ralizara por medio de PSE. Despues de haber realizado su registro exitoso le aprecera un
-          enlace a la pasarela de pagos
-        </div>
       </div>
       <div class="ui modal">
         <i class="close icon"></i>
@@ -151,14 +164,13 @@
           Usuario Registrado Satisfactoriamente!
         </div>
         <div class="content">
-          <div class="ui success message">Apreciado Egresado, su inscripción ha sido registrada, para realizar el pago,
-            por favor dar clic en el botón <a id="#link-pse" href="">ENLACE PORTAL DE PAGOS.</a> En un lapso de máximo
-            de 36 horas sera notificado de que el pago de su incirpción fue debidamente registrado.</div>
+          <div class="ui success message">Apreciado Egresado, su inscripción ha sido registrada. Para realizar el pago,
+            por favor dar clic en el botón <a id="#link-pse" href="">ENLACE PORTAL DE PAGOS.</a>.
+            Por favor realizar el pago en un periodo menor a 48 horas para reservar su cupo en el evento.
+            Una vez realizado el pago, en un lapso de máximo de 48 horas recibirá el correo oficial de bienvenida.
+          </div>
         </div>
-        <!-- <div class="actions">
-          <div class="ui button">Cancel</div>
-          <div class="ui button">OK</div>
-        </div> -->
+
       </div>
     </div>
   </div>
