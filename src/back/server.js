@@ -16,6 +16,7 @@
         var Spreedsheet = SpreadsheetApp.openByUrl(url);
         if (url && sheet) return Spreedsheet.getSheetByName(sheet);
     }
+
     function getRawDataFromSheet(url, sheet) {
         var mSheet = getSheetFromSpreadSheet(url, sheet);
         if (mSheet) return mSheet.getSheetValues(1, 1, mSheet.getLastRow(), mSheet.getLastColumn());
@@ -52,6 +53,7 @@
         var finalValues = personValues.map(function (value) {
             return String(value)
         })
+
         inscritosSheet.appendRow(finalValues)
         var result = { data: finalValues, ok: true }
         logFunctionOutput(registerPerson.name, result)
@@ -162,15 +164,13 @@
                     }
                 }
             }
-
         }
-
         //logFunctionOutput(objectToSheetValues.name, arrayValues)
         return arrayValues
     }
 
     function getMainFolder() {
-        var dropbox = "SCRIPTS SEMILLEROS";
+        var dropbox = "Cena Gala";
         var mainFolder,
             folders = DriveApp.getFoldersByName(dropbox);
 
@@ -184,29 +184,28 @@
 
     function createStudentFolder(numdoc, data, arrayFiles) {
         //se crea la carpeta que va contener los arhivos actuales
+        var result = {
+            url: '',
+            files: []
+        }
         var mainFolder = getMainFolder();
         var currentFolder = getCurrentFolder(numdoc, mainFolder);
-        var lastFiles = [];
+
         data.push(currentFolder.getUrl());
         for (var i in arrayFiles) {
             var file = currentFolder.createFile(arrayFiles[i]);
-            lastFiles.push(file);
+            result.files.push(file);
             file.setDescription("Subido Por " + numdoc);
         }
-        return lastFiles;
+        return result.files;
     }
 
     function validateFormFiles(form) {
 
-        //arreglo que almacena temporalmente los archivos
-        var arrayFiles = new Array();
+        var arrayFiles = []
 
-        //validador de la existencia de archivos
         var validatorFiles = {
             docFile: false,
-            constanciaEstudFile: false,
-            reciboFile: false,
-            constanciaFuncFile: false
         };
 
         if (form.docFile) {
@@ -215,16 +214,7 @@
             arrayFiles.push(fileDoc);
             validatorFiles.docFile = true;
         }
-
-        if (form.constanciaEstudFile) {
-            var fileConstanciaEstud = form.constanciaEstudFile;
-            fileConstanciaEstud.setName(form.numdoc + "_COSNTANCIA_ESTUD");
-            arrayFiles.push(fileConstanciaEstud);
-            validatorFiles.constanciaEstudFile = true;
-        }
-
         return arrayFiles;
-
     }
 
     function generatePayment(index){

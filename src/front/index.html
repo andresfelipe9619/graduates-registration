@@ -12,7 +12,7 @@
   }
 
   #main-content {
-    margin-top: 100px ;
+    margin-top: 60px ;
   }
 
   input:not([name='correo']) {
@@ -37,7 +37,7 @@
   }
 
   #id-search {
-    margin-top: 50px;
+    margin-top: 20px;
   }
   .not-allowed {
     cursor: not-allowed  !important;
@@ -68,8 +68,8 @@
   </div>
 
   <div id="main-content" class="ui main container middle center grid">
-    <div class="one column row" id="id-search">
-      <div class="seven wide column">
+    <div class="one column row fluid" id="id-search">
+      <div id="search-container" class="twelve wide column">
         <div class="ui fluid action input large">
           <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Ingrese su numero de cédula..."
             type="text">
@@ -84,15 +84,14 @@
     </div>
     <div class="row">
       <div id="mainForm" class="ten wide center column">
-
         <form class="ui form attached fluid segment">
-          <div class="ui error message"></div>
+          <div class="ui error message"><i class="close icon"></i></div>
 
           <h4 class="ui dividing header">Información General</h4>
           <div class="field">
             <div class="fields">
               <div class="sixteen wide field">
-                <label>Numero de Cédula</label>
+                <label>Número de Cédula</label>
                 <input class="numeric" name="cedula" placeholder="Numero de documento" type="text">
               </div>
             </div>
@@ -140,9 +139,9 @@
               <label>Prefiero cena vegana</label>
             </div>
           </div>
-          <div class="field">
+          <div class="field file-field">
             <label for="my-file">Documento de validez que es Egresado(carnet, acta de grado, diploma).</label>
-            <input type="file" id="my-file" name="my-file" />
+            <input type="file" id="doc_file" name="doc_file" />
           </div>
           <br>
           <div class="field hidden content">
@@ -166,11 +165,10 @@
         <div class="content">
           <div class="ui success message">Apreciado Egresado, su inscripción ha sido registrada. Para realizar el pago,
             por favor dar clic en el botón <a id="#link-pse" href="">ENLACE PORTAL DE PAGOS.</a>.
-            Por favor realizar el pago en un periodo menor a 48 horas para reservar su cupo en el evento.
+            Recuerde realizar el pago en un periodo menor a 48 horas para reservar su cupo en el evento.
             Una vez realizado el pago, en un lapso de máximo de 48 horas recibirá el correo oficial de bienvenida.
           </div>
         </div>
-
       </div>
     </div>
   </div>
