@@ -48,6 +48,7 @@
         person.push({ name: "hora_registro", value: new Date() })
         person.push({ name: "pago_comprobado", value: "NO" })
 
+        logFunctionOutput('perosn', person)
 
         var personValues = objectToSheetValues(person, headers)
         var finalValues = personValues.map(function (value) {
@@ -169,6 +170,29 @@
         return arrayValues
     }
 
+    function getCurrentFolder(name, mainFolder) {
+        //se crea la carpeta que va conener todos los docmuentos
+        var nameFolder = "documentos";
+        var FolderFiles,
+            folders = mainFolder.getFoldersByName(nameFolder);
+        if (folders.hasNext()) {
+            FolderFiles = folders.next();
+        } else {
+            FolderFiles = mainFolder.createFolder(nameFolder);
+        }
+
+        // se crea la carpeta que va contener los documentos de cada inscrito
+        var currentFolder,
+            folders = FolderFiles.getFoldersByName(name);
+        if (folders.hasNext()) {
+            currentFolder = folders.next();
+        } else {
+            currentFolder = FolderFiles.createFolder(name);
+        }
+
+        return currentFolder;
+    }
+
     function getMainFolder() {
         var dropbox = "Cena Gala";
         var mainFolder,
@@ -182,39 +206,25 @@
         return mainFolder;
     }
 
-    function createStudentFolder(numdoc, data, arrayFiles) {
+    function createStudentFolder(numdoc, data) {
         //se crea la carpeta que va contener los arhivos actuales
         var result = {
             url: '',
-            files: []
+            file: ''
         }
         var mainFolder = getMainFolder();
         var currentFolder = getCurrentFolder(numdoc, mainFolder);
+        result.url = currentFolder.getUrl();
 
-        data.push(currentFolder.getUrl());
-        for (var i in arrayFiles) {
-            var file = currentFolder.createFile(arrayFiles[i]);
-            result.files.push(file);
-            file.setDescription("Subido Por " + numdoc);
-        }
-        return result.files;
-    }
+        var contentType = data.substring(5,data.indexOf(';')),
+        bytes = Utilities.base64Decode(data.substr(data.indexOf('base64,')+7)),
+        blob = Utilities.newBlob(bytes, contentType, file);
 
-    function validateFormFiles(form) {
-
-        var arrayFiles = []
-
-        var validatorFiles = {
-            docFile: false,
-        };
-
-        if (form.docFile) {
-            var fileDoc = form.docFile;
-            fileDoc.setName(form.numdoc + "_DOCUMENTO");
-            arrayFiles.push(fileDoc);
-            validatorFiles.docFile = true;
-        }
-        return arrayFiles;
+        var file = currentFolder.createFile(blob);
+        file.setDescription("Subido Por " + numdoc);
+        file.setName(numdoc+"_documento");
+        result.file = file.getName();
+        return result;
     }
 
     function generatePayment(index){

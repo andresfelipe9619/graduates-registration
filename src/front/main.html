@@ -40,16 +40,24 @@
     try {
       e.preventDefault();
       var mForm = $(".ui.form");
-      var formData = mForm.serializeArray();
-      // console.log(formData)
+      var formData = mForm.serializeArray()
+      var file = $('input[type="file"]').prop('files')[0];
+      var reader = new FileReader()
       mForm.addClass("loading");
-  
-      if (buttonpressed == "submit-btn") {
+      reader.readAsDataURL(file);
+      reader.onloadend = function(e) {
+      // formData.push({ name: 'doc_file', value:  e.target.result });
+      function onSuccess(result){
+        if (result) {
+          formData.push({name: 'doc_file', value: result.url});
+          console.log('all is ok', result)
+          if (buttonpressed == "submit-btn") {
         formData.push({ name: "pago_generado", value: "NO" });
       } else if (buttonpressed == "submit-pay-btn") {
         formData.push({ name: "pago_generado", value: "SI" });
-      }
-  
+      }     
+    
+
       var index_vegana = -1;
       var vegana = formData.find((field, index) => {
         index_vegana = index;
@@ -65,8 +73,17 @@
       } else {
         formData.push({ name: "cena_vegana", value: "NO" });
       }
-  
+
+      console.log('form',formData)
       registerPersonInSheet(formData);
+        }
+      }
+
+       google.script.run.withSuccessHandler(onSuccess)
+       .createStudentFolder($("input[name='cedula']").val(), e.target.result)
+      };
+
+
     } catch (error) {
       $(".ui.error.message").text(error.toString());
     }
@@ -89,7 +106,7 @@
         console.log("You fucked up", response);
       }
     }
-  
+    console.log(formData);
     google.script.run.withSuccessHandler(onSuccess).registerPerson(formData);
   }
   
