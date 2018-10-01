@@ -40,36 +40,60 @@
     try {
       e.preventDefault();
       var mForm = $(".ui.form");
-      var formData = mForm.serializeArray();
-      // console.log(formData)
+      var formData = mForm.serializeArray()
       mForm.addClass("loading");
-  
-      if (buttonpressed == "submit-btn") {
-        formData.push({ name: "pago_generado", value: "NO" });
-      } else if (buttonpressed == "submit-pay-btn") {
-        formData.push({ name: "pago_generado", value: "SI" });
-      }
-  
-      var index_vegana = -1;
-      var vegana = formData.find((field, index) => {
-        index_vegana = index;
-        return field.name == "cena_vegana";
-      });
-      console.log(vegana);
-      if (index_vegana > -1 && vegana) {
-        if (formData[index_vegana].value == "on") {
-          formData[index_vegana].value = "SI";
-        } else {
-          formData[index_vegana].value = "NO";
+
+      if(!$('input[type="file"]').hasClass("not-visible")){
+        var file = $('input[type="file"]').prop('files')[0];
+        var reader = new FileReader()
+        reader.readAsDataURL(file);
+        reader.onloadend = function(e) {
+        function onSuccess(result){
+          if (result) {
+            formData.push({name: 'doc_file', value: result.url});
+            addPayment(formData)
+            
+          }
         }
-      } else {
-        formData.push({ name: "cena_vegana", value: "NO" });
+        google.script.run.withSuccessHandler(onSuccess)
+        .createStudentFolder($("input[name='cedula']").val(), e.target.result)
+        }
+      }else{
+       formData.push({name: 'doc_file', value: 'SRA'});
+        addPayment(formData)
       }
-  
-      registerPersonInSheet(formData);
+
     } catch (error) {
       $(".ui.error.message").text(error.toString());
     }
+  }
+
+  function addPayment(formData){
+          console.log('all is ok', formData)
+          if (buttonpressed == "submit-btn") {
+            formData.push({ name: "pago_generado", value: "NO" });
+          } else if (buttonpressed == "submit-pay-btn") {
+            formData.push({ name: "pago_generado", value: "SI" });
+          }     
+
+          var index_vegana = -1;
+          var vegana = formData.find((field, index) => {
+            index_vegana = index;
+            return field.name == "cena_vegana";
+          });
+          console.log(vegana);
+          if (index_vegana > -1 && vegana) {
+            if (formData[index_vegana].value == "on") {
+              formData[index_vegana].value = "SI";
+            } else {
+              formData[index_vegana].value = "NO";
+            }
+          } else {
+            formData.push({ name: "cena_vegana", value: "NO" });
+          }
+
+          console.log('form',formData)
+          registerPersonInSheet(formData);
   }
   
   function registerPersonInSheet(formData) {
@@ -89,7 +113,7 @@
         console.log("You fucked up", response);
       }
     }
-  
+    console.log(formData);
     google.script.run.withSuccessHandler(onSuccess).registerPerson(formData);
   }
   

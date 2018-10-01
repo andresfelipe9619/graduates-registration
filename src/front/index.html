@@ -30,6 +30,7 @@
   #mainForm {
     display: none;
   }
+
   .ui.modal{
     position: fixed !important;
     top: 40% !important;
@@ -39,9 +40,10 @@
   #id-search {
     margin-top: 20px;
   }
+
   .not-allowed {
     cursor: not-allowed  !important;
-    }
+  }
 
   .not-visible{
     display: none !important;
@@ -51,8 +53,8 @@
     display: block !important;
   }
 
-.ui.disabled.dropdown, .ui.dropdown .menu>.disabled.item{
-  opacity:0.8 !important;
+  .ui.disabled.dropdown, .ui.dropdown .menu>.disabled.item{
+    opacity:0.8 !important;
   }
   </style>
 </head>
@@ -83,7 +85,7 @@
       </div>
     </div>
     <div class="row">
-      <div id="mainForm" class="ten wide center column">
+      <div id="mainForm" class="twelve wide center column">
         <form class="ui form attached fluid segment">
           <div class="ui error message"><i class="close icon"></i></div>
 
@@ -133,17 +135,17 @@
               <input name="celular" class="numeric" placeholder="Telefono" type="text">
             </div>
           </div>
+          <div class="field file-field">
+            <label for="my-file">Documento de validez que es Egresado(carnet, acta de grado, diploma).</label>
+            <input type="file" id="doc_file" name="doc_file" />
+          </div>
+          <br>
           <div class="field">
             <div class="ui checkbox">
               <input name="cena_vegana" type="checkbox">
               <label>Prefiero cena vegana</label>
             </div>
           </div>
-          <div class="field file-field">
-            <label for="my-file">Documento de validez que es Egresado(carnet, acta de grado, diploma).</label>
-            <input type="file" id="doc_file" name="doc_file" />
-          </div>
-          <br>
           <div class="field hidden content">
             <div class="ui checkbox">
               <input name="politicas" type="checkbox">
@@ -159,7 +161,7 @@
       </div>
       <div class="ui modal">
         <i class="close icon"></i>
-        <div class="header">
+        <div class="header success">
           Usuario Registrado Satisfactoriamente!
         </div>
         <div class="content">
