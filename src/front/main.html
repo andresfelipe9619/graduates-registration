@@ -43,7 +43,7 @@
       var formData = mForm.serializeArray()
       mForm.addClass("loading");
 
-      if(!$('input[type="file"]').hasClass("not-visible")){
+      if(!$('.file-field').hasClass("not-visible")){
         var file = $('input[type="file"]').prop('files')[0];
         var reader = new FileReader()
         reader.readAsDataURL(file);
@@ -102,11 +102,17 @@
         $(".ui.form").removeClass("loading");
         disableFormFielfds(false);
         $(".ui.form").form("clear");
-  
+        $("#result-msg").text('')
         if (buttonpressed == "submit-btn") {
-          $(".ui.success.message").text(
+          $("#result-msg").text(
             "Su inscripción fue realizada de manera exitosa, Recuerde Generar el pago lo antes posible para reservar su cupo en nuestra cena de gala Egresados 2018. Después de pasadas 48 horas, su inscripción será eliminada."
           );
+        }else if(buttonpressed == "submit-pay-btn"){
+          $("#result-msg").append(`Apreciado Egresado, su inscripción ha sido registrada. Para realizar el pago,
+            por favor dar clic en el <a id="#link-pse" target="_blank" href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">ENLACE
+            PORTAL DE PAGOS.</a>.
+            Recuerde realizar el pago en un periodo menor a 48 horas para reservar su cupo en el evento.
+            Una vez realizado el pago, en un lapso de máximo de 48 horas recibirá el correo oficial de bienvenida.`)
         }
         $(".ui.modal").modal("show");
       } else {
@@ -127,6 +133,8 @@
         $(".ui.form").addClass("loading");
         console.log("A nice formatted person", person);
         $("#btn-search").removeClass("loading");
+        $("input[name='cedula']").prop("readonly", true);
+        $("input[name='cedula']").addClass("not-allowed");
         if (person.isRegistered) {
           loadPersonInForm(person);
         } else {
@@ -151,9 +159,16 @@
     if (bool) {
       $("input:not([name='busca-cedula'])").prop("readonly", true);
       $("input:not([name='busca-cedula'])").addClass("not-allowed");
+      $(".ui.checkbox").checkbox();
+      $(".ui.checkbox").addClass("read-only");
+      $(".ui.checkbox").addClass("not-allowed");
     } else {
       $("input:not([name='busca-cedula'])").prop("readonly", false);
-      $("input:not([name='busca-cedula'])").removeClass("not-allowed");
+      $("input:not([name='busca-cedula'])").removeClass("not-allowed"); 
+      $(".ui.checkbox").checkbox();
+      $(".ui.checkbox").removeClass("read-only");
+      $(".ui.checkbox").removeClass("not-allowed");
+
     }
   }
   var normalize = (function() {
@@ -189,16 +204,25 @@
     $("input[name='apellidos']").prop("readonly", true);
     $("input[name='apellidos']").addClass("not-allowed");
     $(".file-field").addClass("not-visible");
+    // $(".pay-info").css("display", "none");
   
     // $("input[name='politicas']").prop('checked', true)
   
     if (person.titulo.length > 0) {
-      var first = person.titulo[person.titulo.length - 1];
-  
-      var femenine = first.indexOf(" ") - 1;
-      if (femenine == "A") {
+      var firstProgram = person.titulo[person.titulo.length - 1];
+      var hasEnfasis = firstProgram.indexOf("Enfasis")
+      if(hasEnfasis > -1){
+         firstProgram = firstProgram.substr(0, hasEnfasis)
+      console.log('enfasis', hasEnfasis);
+      }
+      
+      var femenine = firstProgram.indexOf(" ") - 1;
+      console.log('femenine',firstProgram.charAt(femenine))
+      if (firstProgram.charAt(femenine) == "A") {
         person.titulo[person.titulo.length - 1] =
-          first.substr(0, femenine) + "O" + person.titulo.substr(femenine + 1);
+          firstProgram.substr(0, femenine) + "O" + firstProgram.substr(femenine + 1);
+      console.log('your first',  person.titulo[person.titulo.length - 1])
+
       }
       function onSuccess(result) {
         if (result) {
@@ -222,23 +246,7 @@
       google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms();
     }
   }
-  
-  function submitPayment() {
-    $("#register-pay-btn").addClass("loading");
-  
-    if (personIndex > -1) {
-      function onSuccess(result) {
-        if (result) {
-          $(".ui.modal").modal("show");
-          console.log("result", result);
-        }
-        $("#register-pay-btn").removeClass("loading");
-      }
-      google.script.run
-        .withSuccessHandler(onSuccess)
-        .generatePayment(personIndex);
-    }
-  }
+
   
   function loadPersonInForm(person) {
     console.log("Person in form", person);
@@ -256,6 +264,15 @@
     } else {
       $("input[name='cena_vegana']").prop("checked", false);
     }
+    if (person.data["pago_comprobado"] == "SI") {
+      console.log('comprobadoooooo')
+      $("#pay-msg").removeClass("not-visible");
+      $("#pay-msg").append( `<i class="icon check circle"></i>
+          El pago de su inscripción a la Noche de Gala de Egresados fue registrado satisfactoriamente. Le esperamos el
+          próximo 23 de Noviembre de 2018
+        </div>`);
+    }
+
     $(".ui.dropdown").addClass("disabled");
     $(".fields.regreso").addClass("not-allowed");
     $(".file-field").addClass("not-visible");
@@ -264,10 +281,29 @@
     if (person.data["pago_generado"] == "NO") {
       $("#register-pay-btn").addClass("visible");
     }
+
+
     $("input[name='politicas']").prop("checked", true);
     disableFormFielfds(true);
   }
+    
+  function submitPayment() {
+    $("#register-pay-btn").addClass("loading");
   
+    if (personIndex > -1) {
+      function onSuccess(result) {
+        if (result) {
+          $(".ui.modal").modal("show");
+          console.log("result", result);
+        }
+        $("#register-pay-btn").removeClass("loading");
+      }
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .generatePayment(personIndex);
+    }
+  } 
+
   function showForm() {
     $("#mainForm").css("display", "block");
     $("ui.submit.button").css("display", "block");
@@ -277,6 +313,18 @@
   
   function hideForm() {
     $("#mainForm").css("display", "none");
+    $(".fields.regreso").removeClass("not-allowed");
+    $(".file-field").removeClass("not-visible");
+    $("#submit-btn").removeClass("not-visible");
+    $("#submit-pay-btn").removeClass("not-visible");
+    $("input[name='politicas']").prop("checked", false);
+    $("input[name='cena_vegana']").prop("checked", false);
+    $(".dropdown").dropdown();
+    $(".ui.dropdown").removeClass("disabled");
+     $(".fields.regreso").removeClass("not-allowed");
+     $("#pay-msg").addClass("not-visible")
+     $("#pay-msg").text("")
+
     disableFormFielfds(false);
     $(".ui.form").form("clear");
   }
