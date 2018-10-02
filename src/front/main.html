@@ -105,14 +105,14 @@
         $("#result-msg").text('')
         if (buttonpressed == "submit-btn") {
           $("#result-msg").text(
-            "Su inscripción fue realizada de manera exitosa, Recuerde Generar el pago lo antes posible para reservar su cupo en nuestra cena de gala Egresados 2018. Después de pasadas 48 horas, su inscripción será eliminada."
+            "Su inscripción a la Cena de Gala Egresados 2018 fue realizada de manera exitosa. Recuerde que ud cuenta con 48 horas para generar su pago. Pasadas estas 48 horas, el sistema desabilitará la inscripción."
           );
         }else if(buttonpressed == "submit-pay-btn"){
           $("#result-msg").append(`Apreciado Egresado, su inscripción ha sido registrada. Para realizar el pago,
             por favor dar clic en el <a id="#link-pse" target="_blank" href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">ENLACE
             PORTAL DE PAGOS.</a>.
             Recuerde realizar el pago en un periodo menor a 48 horas para reservar su cupo en el evento.
-            Una vez realizado el pago, en un lapso de máximo de 48 horas recibirá el correo oficial de bienvenida.`)
+            Una vez realizado el pago, en un lapso máximo de 48 horas recibirá el correo oficial de bienvenida.`)
         }
         $(".ui.modal").modal("show");
       } else {
@@ -173,7 +173,7 @@
   }
   var normalize = (function() {
     var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç",
-      to = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
+      to = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuuNncc",
       mapping = {};
   
     for (var i = 0, j = from.length; i < j; i++)
@@ -209,29 +209,40 @@
     // $("input[name='politicas']").prop('checked', true)
   
     if (person.titulo.length > 0) {
-      var firstProgram = person.titulo[person.titulo.length - 1];
+      var firstProgram = normalize(person.titulo[person.titulo.length - 1]);
       var hasEnfasis = firstProgram.indexOf("Enfasis")
       if(hasEnfasis > -1){
-         firstProgram = firstProgram.substr(0, hasEnfasis)
-      console.log('enfasis', hasEnfasis);
+        firstProgram = firstProgram.substr(0, hasEnfasis)
+        console.log('enfasis', hasEnfasis);
       }
-      
-      var femenine = firstProgram.indexOf(" ") - 1;
-      console.log('femenine',firstProgram.charAt(femenine))
-      if (firstProgram.charAt(femenine) == "A") {
-        person.titulo[person.titulo.length - 1] =
-          firstProgram.substr(0, femenine) + "O" + firstProgram.substr(femenine + 1);
-      console.log('your first',  person.titulo[person.titulo.length - 1])
 
-      }
+      var programArray = firstProgram.split(" ");
+      var firstProgramWord = programArray[0];
+
+      var lessWord = firstProgramWord.slice(1,firstProgramWord.length - 3)
+      var restProgramWords = programArray.slice(1, programArray.length).join(" ");
+
+      console.log(programArray)
+      console.log(firstProgramWord)
+      console.log(lessWord)
+      console.log(restProgramWords)
+
+      
+      // var femenine = firstProgram.indexOf(" ") - 1;
+      // console.log('femenine',firstProgram.charAt(femenine))
+      // if (firstProgram.charAt(femenine) == "A") {
+      //   person.titulo[person.titulo.length - 1] =
+      //     firstProgram.substr(0, femenine) + "O" + firstProgram.substr(femenine + 1);
+      // console.log('your first',  person.titulo[person.titulo.length - 1])
+
+      // }
+      
       function onSuccess(result) {
         if (result) {
           $.each(result.programs, function(i, program) {
-            if (
-              normalize(person.titulo[person.titulo.length - 1]).includes(
-                String(program["titulo_otorgado"])
-              ) > 0
-            ) {
+            
+            if (String(program["titulo_otorgado"]).split(" ")[0].includes(lessWord) > 0
+            && String(program["titulo_otorgado"]).includes(lessWord) > 0) {
               $("select[name='programa']").dropdown(
                 "set selected",
                 program.nombre
@@ -241,6 +252,7 @@
               $(".fields.regreso").addClass("not-allowed");
             }
           });
+          $(".ui.form").removeClass("loading");
         }
       }
       google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms();
@@ -251,7 +263,6 @@
   function loadPersonInForm(person) {
     console.log("Person in form", person);
     personIndex = Number(person.index) + 1;
-    $(".ui.form").removeClass("loading");
     $("input[name='nombres']").val(person.data.nombres);
     $("input[name='apellidos']").val(person.data.apellidos);
     $("input[name='cedula']").val(person.data.cedula);
@@ -281,10 +292,10 @@
     if (person.data["pago_generado"] == "NO") {
       $("#register-pay-btn").addClass("visible");
     }
-
-
     $("input[name='politicas']").prop("checked", true);
     disableFormFielfds(true);
+    $(".ui.form").removeClass("loading");
+
   }
     
   function submitPayment() {
@@ -372,9 +383,11 @@
         var resultObject = JSON.parse(result);
         if (resultObject.titulo.length > 0 && resultObject.nombre.length > 0) {
           loadSRAPersonInForm(resultObject);
+        }else{
+          $(".ui.form").removeClass("loading");
+
         }
       }
-      $(".ui.form").removeClass("loading");
     }
   
     google.script.run.withSuccessHandler(onSuccess).getSRAPerson(cedula);
