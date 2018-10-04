@@ -223,20 +223,21 @@
 
       var lessWord = firstProgramWord.slice(0,firstProgramWord.length - 3)
       var restProgramWords = programArray.slice(1, programArray.length).join(" ");
+      var restFemenineWord = restProgramWords.slice(0, restProgramWords.length - 3)
 
       console.log(programArray)
       console.log(firstProgramWord)
       console.log(lessWord)
-      console.log(restProgramWords)
+      console.log(restFemenineWord)
       function onSuccess(result) {
           var isGood = false 
         if (result) {
           $.each(result.programs, function(i, program) {
                // console.log('rest')
-                //console.log(restProgramWords)
+                //console.log(restFemenineWord)
                // console.log(String(program["titulo_otorgado"]))
 
-            if (String(program["titulo_otorgado"]).includes(restProgramWords) > 0 ) {
+            if (String(program["titulo_otorgado"]).includes(restFemenineWord) > 0 ) {
                 console.log('OMG', String(program["titulo_otorgado"]).split(" "))
 
                 if(String(program["titulo_otorgado"]).split(" ")[0].includes(lessWord) > 0){
