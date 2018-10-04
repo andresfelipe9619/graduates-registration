@@ -39,6 +39,7 @@
     position: fixed !important;
     top: 40% !important;
     left: 15% !important;
+    width:70%;
   }
 
   #id-search {
@@ -57,9 +58,16 @@
     display: block !important;
   }
 
+
   .ui.disabled.dropdown, .ui.dropdown .menu>.disabled.item{
     opacity:0.8 !important;
   }
+
+  @media (max-width: 767px) {
+  .modal.tiny {
+    width: 70% !important;
+  }
+}
   </style>
 </head>
 
@@ -153,19 +161,25 @@
               <label>Prefiero cena vegana</label>
             </div>
           </div>
-          <div class="field hidden content">
+          <div class="field content">
             <div class="ui checkbox">
               <input name="politicas" type="checkbox">
-              <label>Acepto las <a href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf">Políticas
+              <label>Acepto las <a target="_blank" href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf">Políticas
                   de tratamiento de datos de la Universidad del Valle</a></label>
             </div>
           </div>
-          <div id="submit-btn" name="submit-btn" class="ui submit button">Registrar Incripción</div>
-          <div id="submit-pay-btn" name="submit-pay-btn" class="ui red submit button">Registrar Incripción y
-            GenerarPago</div>
-          <div id="register-pay-btn" name="register-pay-btn" onclick="submitPayment()" class="ui red not-visible button">GenerarPago</div>
+          <div id="submit-btn" name="submit-btn " class="ui submit red button">continuar</div>
+
+          <a class="ui red not-visible button" id="register-pay-btn" name="register-pay-btn" onclick="submitPayment()"
+            target=" _blank" href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">Generar
+            pago</a>
         </form>
 
+        <div class="ui bottom attached warning message">
+          <i class="icon help"></i>
+          Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico
+          soyegresado@correounivalle.edu.co
+        </div>
       </div>
       <div class="ui tiny modal">
         <i class="close icon" onclick="location.reload('true')"></i>
@@ -174,6 +188,14 @@
         </div>
         <div class="content">
           <div id="result-msg" class="ui success message">
+
+          </div>
+
+          <div class="actions">
+            <a id="modal-payment" class="ui red right labeled icon button" onclick="modalPayment()" target=" _blank"
+              href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">
+              Generar pago
+            </a>
           </div>
         </div>
       </div>
