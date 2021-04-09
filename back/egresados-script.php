@@ -4,7 +4,7 @@ function get_student_information($cod_est){
 
   $chp = curl_init();
 
-  curl_setopt($chp, CURLOPT_URL, "https://sira.univalle.edu.co/sra//paquetes/graduado/index.php?accion=ConsultarGraduado");
+  curl_setopt($chp, CURLOPT_URL, "https://sira.univalle.edu.co/sra//paquetes/graduado/index.php");
 
   curl_setopt($chp, CURLOPT_RETURNTRANSFER, true);
 
