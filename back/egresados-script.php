@@ -64,8 +64,8 @@ function trim_all( $str , $what = NULL , $with = ' ' ){
 // print_r($_POST["documento"]);
 
 
-if(34533255){
-  $student = search_student_info(34533255);
+if(isset($_POST["cedula"])){
+  $student = search_student_info($_POST["cedula"]);
 
   $student = preg_replace('/\s+/', ' ', $student);
   $student = explode(" ", trim_all($student));
