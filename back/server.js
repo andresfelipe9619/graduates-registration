@@ -1,5 +1,6 @@
     var GENERAL_DB = "https://docs.google.com/spreadsheets/d/1s4fI_h4lKP8TUW_3iVTLDxZQOyXCMNUhuRhM1C7bNOA/edit?usp=sharing"
     var PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing"
+    var API_URL = "https://gentle-shore-15094.herokuapp.com/"
 
     function doGet(request) {
         return HtmlService.createTemplateFromFile("index.html")       
@@ -69,7 +70,7 @@
             'payload': 'cedula=' + cedula,
             'validateHttpsCertificates': false
         }
-        var result = UrlFetchApp.fetch('http://arzayus.co/egresados-script.php', options).getContentText();
+        var result = UrlFetchApp.fetch(API_URL, options).getContentText();
         logFunctionOutput(getSRAPerson.name, result)
 
         return result;
