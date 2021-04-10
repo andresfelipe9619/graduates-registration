@@ -1,358 +1,365 @@
 <script type="text/babel">
+  $(document).ready(init_js)
+  var buttonpressed
+  var personIndex
+  function init_js () {
+    $('.submit.button').click(function () {
+      buttonpressed = $(this).attr('name')
+    })
 
-  $(document).ready(init_js);
-  var buttonpressed;
-  var personIndex;
-  function init_js() {
-    $(".submit.button").click(function() {
-      buttonpressed = $(this).attr("name");
-    });
-
-
-    formValidation();
-    loadAcademicProgramsAndFaculties();
-    $(".ui.radio.checkbox").checkbox();
-    $("select.dropdown").dropdown();
-    $(".ui.modal").modal();
-    $(".ui.modal").modal('setting', 'closable', false)
+    formValidation()
+    loadAcademicProgramsAndFaculties()
+    $('.ui.radio.checkbox').checkbox()
+    $('select.dropdown').dropdown()
+    $('.ui.modal').modal()
+    $('.ui.modal').modal('setting', 'closable', false)
     // $(".ui.modal").modal({
     //   blurring: true,
     //   centered: true
 
     // });
     // $('#submit-btn').on('click',)
-    $(".numeric").on("keypress", function(e) {
+    $('.numeric').on('keypress', function (e) {
       return (
         e.metaKey || // cmd/ctrl
         e.which <= 0 || // arrow keys
         e.which == 8 || // delete key
         /[0-9]/.test(String.fromCharCode(e.which))
-      ); // numbers
-    });
-  
-    $("#busca-cedula").on("keyup", function(event) {
-      event.preventDefault();
+      ) // numbers
+    })
+
+    $('#busca-cedula').on('keyup', function (event) {
+      event.preventDefault()
       // Number 13 is the "Enter" key on the keyboard
       if (event.keyCode === 13) {
         // Trigger the button element with a click
-        document.getElementById("btn-search").click();
+        document.getElementById('btn-search').click()
       }
-    });
+    })
   }
-  
-  function validationpassed(e) {
-    try {
-      e.preventDefault();
-      var mForm = $(".ui.form");
-      var formData = mForm.serializeArray()
-      mForm.addClass("loading");
 
-      if(!$('.file-field').hasClass("not-visible")){
-        var file = $('input[type="file"]').prop('files')[0];
+  function validationpassed (e) {
+    try {
+      e.preventDefault()
+      var mForm = $('.ui.form')
+      var formData = mForm.serializeArray()
+      mForm.addClass('loading')
+
+      if (!$('.file-field').hasClass('not-visible')) {
+        var file = $('input[type="file"]').prop('files')[0]
         var reader = new FileReader()
-        reader.readAsDataURL(file);
-        reader.onloadend = function(e) {
-        function onSuccess(result){
-          if (result) {
-            formData.push({name: 'doc_file', value: result.url});
-            addPayment(formData)
-            
+        reader.readAsDataURL(file)
+        reader.onloadend = function (e) {
+          function onSuccess (result) {
+            if (result) {
+              formData.push({ name: 'doc_file', value: result.url })
+              addPayment(formData)
+            }
           }
+          google.script.run
+            .withSuccessHandler(onSuccess)
+            .createStudentFolder(
+              $("input[name='cedula']").val(),
+              e.target.result
+            )
         }
-        google.script.run.withSuccessHandler(onSuccess)
-        .createStudentFolder($("input[name='cedula']").val(), e.target.result)
-        }
-      }else{
-       formData.push({name: 'doc_file', value: 'SRA'});
+      } else {
+        formData.push({ name: 'doc_file', value: 'SRA' })
         addPayment(formData)
       }
-
     } catch (error) {
-      $(".ui.error.message").text(error.toString());
+      $('.ui.error.message').text(error.toString())
     }
   }
 
-  function addPayment(formData){
-          console.log('all is ok', buttonpressed)
-          // if (buttonpressed == "submit-btn") {
-            formData.push({ name: "pago_generado", value: "NO" });
-          // }   
+  function addPayment (formData) {
+    console.log('all is ok', buttonpressed)
+    // if (buttonpressed == "submit-btn") {
+    formData.push({ name: 'pago_generado', value: 'NO' })
+    // }
 
-          var index_vegana = -1;
-          var vegana = formData.find((field, index) => {
-            index_vegana = index;
-            return field.name == "cena_vegana";
-          });
-          console.log(vegana);
-          if (index_vegana > -1 && vegana) {
-            if (formData[index_vegana].value == "on") {
-              formData[index_vegana].value = "SI";
-            } else {
-              formData[index_vegana].value = "NO";
-            }
-          } else {
-            formData.push({ name: "cena_vegana", value: "NO" });
-          }
-
-          console.log('form',formData)
-          registerPersonInSheet(formData);
-  }
-  
-  function registerPersonInSheet(formData) {
-    function onSuccess(response) {
-      if (response.ok) {
-        $(".ui.form").removeClass("loading");
-
-        $("#result-msg").text('')
-        $("#result-msg").text(
-            "Su inscripción a la Cena de Gala Egresados 2018 fue realizada de manera exitosa. Recuerde que usted cuenta con 48 horas para generar su pago. Pasadas estas 48 horas, el sistema deshabilitará la inscripción."
-         );
-        $(".ui.modal").modal("show");
-        $('.actions').css('display', 'block')
-
+    var index_vegana = -1
+    var vegana = formData.find((field, index) => {
+      index_vegana = index
+      return field.name == 'cena_vegana'
+    })
+    console.log(vegana)
+    if (index_vegana > -1 && vegana) {
+      if (formData[index_vegana].value == 'on') {
+        formData[index_vegana].value = 'SI'
       } else {
-        console.log("You fucked up", response);
+        formData[index_vegana].value = 'NO'
+      }
+    } else {
+      formData.push({ name: 'cena_vegana', value: 'NO' })
+    }
+
+    console.log('form', formData)
+    registerPersonInSheet(formData)
+  }
+
+  function registerPersonInSheet (formData) {
+    function onSuccess (response) {
+      if (response.ok) {
+        $('.ui.form').removeClass('loading')
+
+        $('#result-msg').text('')
+        $('#result-msg').text(
+          'Su inscripción a la Cena de Gala Egresados 2018 fue realizada de manera exitosa. Recuerde que usted cuenta con 48 horas para generar su pago. Pasadas estas 48 horas, el sistema deshabilitará la inscripción.'
+        )
+        $('.ui.modal').modal('show')
+        $('.actions').css('display', 'block')
+      } else {
+        console.log('You fucked up', response)
       }
     }
-    console.log(formData);
-    google.script.run.withSuccessHandler(onSuccess).registerPerson(formData);
+    console.log(formData)
+    google.script.run.withSuccessHandler(onSuccess).registerPerson(formData)
   }
-  
-  function searchForPerson() {
-    hideForm();
-    $("#btn-search").addClass("loading");
-  
-    var onSuccess = function(person) {
+
+  function searchForPerson () {
+    hideForm()
+    $('#btn-search').addClass('loading')
+
+    var onSuccess = function (person) {
       if (person) {
-        showForm();
-        $(".ui.form").addClass("loading");
-        console.log("A nice formatted person", person);
-        $("#btn-search").removeClass("loading");
-        $("input[name='cedula']").prop("readonly", true);
-        $("input[name='cedula']").addClass("not-allowed");
+        showForm()
+        $('.ui.form').addClass('loading')
+        console.log('A nice formatted person', person)
+        $('#btn-search').removeClass('loading')
+        $("input[name='cedula']").prop('readonly', true)
+        $("input[name='cedula']").addClass('not-allowed')
         if (person.isRegistered) {
-          loadPersonInForm(person);
+          loadPersonInForm(person)
         } else {
-          searchPersonInSRA(cedula);
+          searchPersonInSRA(cedula)
         }
       } else {
-        console.log("Something went wrong searching user...");
+        console.log('Something went wrong searching user...')
       }
-    };
-  
-    var cedula = $("#busca-cedula").val();
+    }
+
+    var cedula = $('#busca-cedula').val()
     if (cedula.length > 0) {
-      google.script.run.withSuccessHandler(onSuccess).searchPerson(cedula);
+      google.script.run.withSuccessHandler(onSuccess).searchPerson(cedula)
     } else {
-      $("#btn-search").removeClass("loading");
-      $("#search-msg").html("Por favor ingrese una cedula");
-      $("#search-msg").css("display", "block");
-      setTimeout(function(){
-        $("#search-msg").html("Por favor ingrese una cedula");
-        $("#search-msg").css("display", "none");  
+      $('#btn-search').removeClass('loading')
+      $('#search-msg').html('Por favor ingrese una cedula')
+      $('#search-msg').css('display', 'block')
+      setTimeout(function () {
+        $('#search-msg').html('Por favor ingrese una cedula')
+        $('#search-msg').css('display', 'none')
       }, 3000)
     }
   }
-  
-  function disableFormFielfds(bool) {
-    if (bool) {
-      $("input:not([name='busca-cedula'])").prop("readonly", true);
-      $("input:not([name='busca-cedula'])").addClass("not-allowed");
-      $(".ui.checkbox").checkbox();
-      $(".ui.checkbox").prop("read-only", false);
-      $(".ui.checkbox").addClass("not-allowed");
-     $("input[type='checkbox']").addClass("not-allowed");
-    } else {
-      $("input:not([name='busca-cedula'])").prop("readonly", false);
-      $("input:not([name='busca-cedula'])").removeClass("not-allowed"); 
-      $(".ui.checkbox").checkbox();
-      $(".ui.checkbox").prop("read-only", false);
-      $(".ui.checkbox").removeClass("not-allowed");
-      $("input[type='checkbox']").removeClass("not-allowed");
 
+  function disableFormFielfds (bool) {
+    if (bool) {
+      $("input:not([name='busca-cedula'])").prop('readonly', true)
+      $("input:not([name='busca-cedula'])").addClass('not-allowed')
+      $('.ui.checkbox').checkbox()
+      $('.ui.checkbox').prop('read-only', false)
+      $('.ui.checkbox').addClass('not-allowed')
+      $("input[type='checkbox']").addClass('not-allowed')
+    } else {
+      $("input:not([name='busca-cedula'])").prop('readonly', false)
+      $("input:not([name='busca-cedula'])").removeClass('not-allowed')
+      $('.ui.checkbox').checkbox()
+      $('.ui.checkbox').prop('read-only', false)
+      $('.ui.checkbox').removeClass('not-allowed')
+      $("input[type='checkbox']").removeClass('not-allowed')
     }
   }
-  var normalize = (function() {
-    var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç",
-      to = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuuÑñcc",
-      mapping = {};
-  
+  var normalize = (function () {
+    var from = 'ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç',
+      to = 'AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuuÑñcc',
+      mapping = {}
+
     for (var i = 0, j = from.length; i < j; i++)
-      mapping[from.charAt(i)] = to.charAt(i);
-  
-    return function(str) {
-      var ret = [];
+      mapping[from.charAt(i)] = to.charAt(i)
+
+    return function (str) {
+      var ret = []
       for (var i = 0, j = str.length; i < j; i++) {
-        var c = str.charAt(i);
-        if (mapping.hasOwnProperty(str.charAt(i))) ret.push(mapping[c]);
-        else ret.push(c);
+        var c = str.charAt(i)
+        if (mapping.hasOwnProperty(str.charAt(i))) ret.push(mapping[c])
+        else ret.push(c)
       }
-      return ret.join("");
-    };
-  })();
-  
-  function loadSRAPersonInForm(person) {
-    console.log("PersonSRA in form", person);
-    var full_name = person.nombre.split(" ");
+      return ret.join('')
+    }
+  })()
+
+  function loadSRAPersonInForm (person) {
+    console.log('PersonSRA in form', person)
+    var full_name = person.nombre.split(' ')
     $("input[name='nombres']").val(
-      full_name[2] + " " + (full_name[3] != null ? full_name[3] : "")
-    );
-    $("input[name='apellidos']").val(full_name[0] + " " + full_name[1]);
-    $("input[name='cedula']").prop("readonly", true);
-    $("input[name='cedula']").addClass("not-allowed");
-    $("input[name='nombres']").prop("readonly", true);
-    $("input[name='nombres']").addClass("not-allowed");
-    $("input[name='apellidos']").prop("readonly", true);
-    $("input[name='apellidos']").addClass("not-allowed");
-    $(".file-field").addClass("not-visible");
+      full_name[2] + ' ' + (full_name[3] != null ? full_name[3] : '')
+    )
+    $("input[name='apellidos']").val(full_name[0] + ' ' + full_name[1])
+    $("input[name='cedula']").prop('readonly', true)
+    $("input[name='cedula']").addClass('not-allowed')
+    $("input[name='nombres']").prop('readonly', true)
+    $("input[name='nombres']").addClass('not-allowed')
+    $("input[name='apellidos']").prop('readonly', true)
+    $("input[name='apellidos']").addClass('not-allowed')
+    $('.file-field').addClass('not-visible')
     // $(".pay-info").css("display", "none");
-  
+
     // $("input[name='politicas']").prop('checked', true)
-  
+
     if (person.titulo.length > 0) {
-      var firstProgram = normalize(person.titulo[person.titulo.length - 1]);
-      var hasEnfasis = firstProgram.indexOf("Enfasis")
-      if(hasEnfasis > -1){
+      var firstProgram = normalize(person.titulo[person.titulo.length - 1])
+      var hasEnfasis = firstProgram.indexOf('Enfasis')
+      if (hasEnfasis > -1) {
         firstProgram = firstProgram.substr(0, hasEnfasis)
-        console.log('enfasis', hasEnfasis);
+        console.log('enfasis', hasEnfasis)
       }
 
-      var programArray = firstProgram.split(" ")
-      programArray.splice(-1, 1);
-      var firstProgramWord = programArray[0];
+      var programArray = firstProgram.split(' ')
+      programArray.splice(-1, 1)
+      var firstProgramWord = programArray[0]
 
-      var lessWord = firstProgramWord.slice(0,firstProgramWord.length - 3)
-      var restProgramWords = programArray.slice(1, programArray.length).join(" ");
-      var restFemenineWord = restProgramWords.slice(0, restProgramWords.length - 3)
+      var lessWord = firstProgramWord.slice(0, firstProgramWord.length - 3)
+      var restProgramWords = programArray
+        .slice(1, programArray.length)
+        .join(' ')
+      var restFemenineWord = restProgramWords.slice(
+        0,
+        restProgramWords.length - 3
+      )
 
       console.log(programArray)
       console.log(firstProgramWord)
       console.log(lessWord)
       console.log(restFemenineWord)
-      function onSuccess(result) {
-          var isGood = false 
+      function onSuccess (result) {
+        var isGood = false
         if (result) {
-          $.each(result.programs, function(i, program) {
-               // console.log('rest')
-                //console.log(restFemenineWord)
-               // console.log(String(program["titulo_otorgado"]))
+          $.each(result.programs, function (i, program) {
+            // console.log('rest')
+            //console.log(restFemenineWord)
+            // console.log(String(program["titulo_otorgado"]))
 
-            if (String(program["titulo_otorgado"]).includes(restFemenineWord) > 0 ) {
-                console.log('OMG', String(program["titulo_otorgado"]).split(" "))
+            if (
+              String(program['titulo_otorgado']).includes(restFemenineWord) > 0
+            ) {
+              console.log('OMG', String(program['titulo_otorgado']).split(' '))
 
-                if(String(program["titulo_otorgado"]).split(" ")[0].includes(lessWord) > 0){
-                    console.log('first')
-                                        
-                    $("select[name='programa']").dropdown(
-                    "set selected",
-                    program.nombre
-                    );
-                    $(".dropdown").dropdown();
-                    $(".ui.dropdown").addClass("disabled");
-                    $(".fields.regreso").addClass("not-allowed");
-                    isGood = true
-                }
+              if (
+                String(program['titulo_otorgado'])
+                  .split(' ')[0]
+                  .includes(lessWord) > 0
+              ) {
+                console.log('first')
 
-            }else {
-                isGood = false
+                $("select[name='programa']").dropdown(
+                  'set selected',
+                  program.nombre
+                )
+                $('.dropdown').dropdown()
+                $('.ui.dropdown').addClass('disabled')
+                $('.fields.regreso').addClass('not-allowed')
+                isGood = true
+              }
+            } else {
+              isGood = false
             }
-          });
-          $(".ui.form").removeClass("loading");
-        }else return isGood
+          })
+          $('.ui.form').removeClass('loading')
+        } else return isGood
       }
-      return google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms();
+      return google.script.run
+        .withSuccessHandler(onSuccess)
+        .getFacultiesAndPrograms()
     }
   }
 
-  
-  function loadPersonInForm(person) {
-    console.log("Person in form", person);
-    personIndex = Number(person.index) + 1;
-    $("input[name='nombres']").val(person.data.nombres);
-    $("input[name='apellidos']").val(person.data.apellidos);
-    $("input[name='cedula']").val(person.data.cedula);
-    $("input[name='correo']").val(person.data.correo);
-    $("input[name='celular']").val(person.data.celular);
-    $("select[name='programa']").dropdown("set selected", person.data.programa);
-    $("select[name='facultad']").dropdown("set selected", person.data.facultad);
-    if (person.data["cena_vegana"] == "SI") {
-      $("input[name='cena_vegana']").prop("checked", true);
+  function loadPersonInForm (person) {
+    console.log('Person in form', person)
+    personIndex = Number(person.index) + 1
+    $("input[name='nombres']").val(person.data.nombres)
+    $("input[name='apellidos']").val(person.data.apellidos)
+    $("input[name='cedula']").val(person.data.cedula)
+    $("input[name='correo']").val(person.data.correo)
+    $("input[name='celular']").val(person.data.celular)
+    $("select[name='programa']").dropdown('set selected', person.data.programa)
+    $("select[name='facultad']").dropdown('set selected', person.data.facultad)
+    if (person.data['cena_vegana'] == 'SI') {
+      $("input[name='cena_vegana']").prop('checked', true)
     } else {
-      $("input[name='cena_vegana']").prop("checked", false);
+      $("input[name='cena_vegana']").prop('checked', false)
     }
-    if (person.data["pago_comprobado"] == "SI") {
-      $("#pay-msg").removeClass("not-visible");
-           $("#pay-msg").removeClass("warning");
-     $("#pay-msg").addClass("success");
-      $("#pay-msg").append( `<i class="icon check circle"></i>
+    if (person.data['pago_comprobado'] == 'SI') {
+      $('#pay-msg').removeClass('not-visible')
+      $('#pay-msg').removeClass('warning')
+      $('#pay-msg').addClass('success')
+      $('#pay-msg').append(`<i class="icon check circle"></i>
           El pago de su inscripción a la Noche de Gala de Egresados fue registrado satisfactoriamente. Le esperamos el
           próximo 23 de Noviembre de 2018.
           Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co
-        </div>`);
-    }else{
-     $("#pay-msg").removeClass("not-visible");
-     $("#pay-msg").removeClass("success");
-     $("#pay-msg").addClass("warning");
+        </div>`)
+    } else {
+      $('#pay-msg').removeClass('not-visible')
+      $('#pay-msg').removeClass('success')
+      $('#pay-msg').addClass('warning')
 
-      $("#pay-msg").append( `<i class="icon warning "></i>
+      $('#pay-msg').append(`<i class="icon warning "></i>
           El pago de su inscripción aun no ha sido registrado. Recuerde que después de 48 horas sin registrar el pago, el sistema anulará su inscripción.
           Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co
-        </div>`);
-
+        </div>`)
     }
 
-    $(".ui.dropdown").addClass("disabled");
-    $(".fields.regreso").addClass("not-allowed");
-    $(".file-field").addClass("not-visible");
-    $("#submit-btn").addClass("not-visible");
-    $("#submit-pay-btn").addClass("not-visible");
-    if (person.data["pago_generado"] == "NO") {
-      $("#register-pay-btn").removeClass("not-visible");
-      $("#register-pay-btn").addClass("visible");
+    $('.ui.dropdown').addClass('disabled')
+    $('.fields.regreso').addClass('not-allowed')
+    $('.file-field').addClass('not-visible')
+    $('#submit-btn').addClass('not-visible')
+    $('#submit-pay-btn').addClass('not-visible')
+    if (person.data['pago_generado'] == 'NO') {
+      $('#register-pay-btn').removeClass('not-visible')
+      $('#register-pay-btn').addClass('visible')
     }
-    $("input[name='politicas']").prop("checked", true);
-    disableFormFielfds(true);
-    $(".ui.form").removeClass("loading");
-
+    $("input[name='politicas']").prop('checked', true)
+    disableFormFielfds(true)
+    $('.ui.form').removeClass('loading')
   }
-  function modalPayment(){
-
-    var onSuccess = function(person) {
+  function modalPayment () {
+    var onSuccess = function (person) {
       if (person) {
         if (person.isRegistered) {
-          personIndex = Number(person.index) + 1;
+          personIndex = Number(person.index) + 1
           if (personIndex > -1) {
-            function fullSuccess(result) {
-              console.log("result", result);
-              $("#modal-payment").removeClass("loading");
-                $(".ui.modal").modal("hide");
-                hideForm()    
-                return true
+            function fullSuccess (result) {
+              console.log('result', result)
+              $('#modal-payment').removeClass('loading')
+              $('.ui.modal').modal('hide')
+              hideForm()
+              return true
             }
             return google.script.run
               .withSuccessHandler(fullSuccess)
-              .generatePayment(personIndex);
+              .generatePayment(personIndex)
           }
-        } 
-        
+        }
       } else {
-        console.log("Something went wrong searching user...");
+        console.log('Something went wrong searching user...')
       }
-    };
-  
-    var cedula = $("#busca-cedula").val();
-    $("#modal-payment").addClass("loading");
+    }
+
+    var cedula = $('#busca-cedula').val()
+    $('#modal-payment').addClass('loading')
     if (cedula.length > 0) {
-      return google.script.run.withSuccessHandler(onSuccess).searchPerson(cedula);
+      return google.script.run
+        .withSuccessHandler(onSuccess)
+        .searchPerson(cedula)
     }
   }
-    
-  function submitPayment() {
-    $("#register-pay-btn").addClass("loading");
-  
+
+  function submitPayment () {
+    $('#register-pay-btn').addClass('loading')
+
     if (personIndex > -1) {
-      function onSuccess(result) {
-        $("#register-pay-btn").removeClass("loading");
+      function onSuccess (result) {
+        $('#register-pay-btn').removeClass('loading')
         if (result) {
           //   $("#result-msg").append(`Apreciado Egresado, su inscripción ha sido registrada. Para realizar el pago,
           //   por favor dar clic en el botón realizar pago
@@ -360,211 +367,205 @@
           //   Una vez realizado el pago, en un lapso máximo de 48 horas recibirá el correo oficial de bienvenida.
           //   Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co`)
           // $(".ui.modal").modal("show");
-          console.log("result", result);
+          console.log('result', result)
           hideForm()
           return true
         }
       }
       return google.script.run
         .withSuccessHandler(onSuccess)
-        .generatePayment(personIndex);
+        .generatePayment(personIndex)
     }
-  } 
-
-  function showForm() {
-    $("#mainForm").css("display", "block");
-    $("ui.submit.button").css("display", "block");
-    $("input[name='cedula']").val($("#busca-cedula").val());
-    disableFormFielfds(false);
   }
-  
-  function hideForm() {
-    $("#mainForm").css("display", "none");
-    $(".fields.regreso").removeClass("not-allowed");
-    $(".file-field").removeClass("not-visible");
-    $("#submit-btn").removeClass("not-visible");
-    $("#submit-pay-btn").removeClass("not-visible");
-    $("input[name='politicas']").prop("checked", false);
-    $("input[name='cena_vegana']").prop("checked", false);
-    $(".dropdown").dropdown();
-    $(".ui.dropdown").removeClass("disabled");
-     $(".fields.regreso").removeClass("not-allowed");
-     $("#pay-msg").addClass("not-visible")
-     $("#pay-msg").text("")
 
-    disableFormFielfds(false);
-    $(".ui.form").form("clear");
+  function showForm () {
+    $('#mainForm').css('display', 'block')
+    $('ui.submit.button').css('display', 'block')
+    $("input[name='cedula']").val($('#busca-cedula').val())
+    disableFormFielfds(false)
   }
-  
-  function loadAcademicProgramsAndFaculties() {
-    function onSuccess(result) {
-      console.log("good job", result);
+
+  function hideForm () {
+    $('#mainForm').css('display', 'none')
+    $('.fields.regreso').removeClass('not-allowed')
+    $('.file-field').removeClass('not-visible')
+    $('#submit-btn').removeClass('not-visible')
+    $('#submit-pay-btn').removeClass('not-visible')
+    $("input[name='politicas']").prop('checked', false)
+    $("input[name='cena_vegana']").prop('checked', false)
+    $('.dropdown').dropdown()
+    $('.ui.dropdown').removeClass('disabled')
+    $('.fields.regreso').removeClass('not-allowed')
+    $('#pay-msg').addClass('not-visible')
+    $('#pay-msg').text('')
+
+    disableFormFielfds(false)
+    $('.ui.form').form('clear')
+  }
+
+  function loadAcademicProgramsAndFaculties () {
+    function onSuccess (result) {
+      console.log('good job', result)
       if (result) {
-        $.each(result.programs, function(i, program) {
+        $.each(result.programs, function (i, program) {
           $("select[name='programa']").append(
-            $("<option>", {
+            $('<option>', {
               value: program.nombre,
               text: program.nombre
             })
-          );
-        });
-  
-        $.each(result.faculties, function(i, faculty) {
+          )
+        })
+
+        $.each(result.faculties, function (i, faculty) {
           $("select[name='facultad']").append(
-            $("<option>", {
+            $('<option>', {
               value: faculty,
               text: faculty
             })
-          );
-        });
-  
-        $("select[name='programa']").on("change", function(e) {
-          $.each(result.programs, function(i, program) {
+          )
+        })
+
+        $("select[name='programa']").on('change', function (e) {
+          $.each(result.programs, function (i, program) {
             if (e.target.value == program.nombre) {
-              $("select[name='facultad']").val(program.facultad);
-              $("select[name='facultad']").trigger("change");
-              return false;
+              $("select[name='facultad']").val(program.facultad)
+              $("select[name='facultad']").trigger('change')
+              return false
             }
-          });
-        });
+          })
+        })
       }
     }
-    google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms();
+    google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms()
   }
-  
-  function searchPersonInSRA(cedula) {
-    function onSuccess(result) {
-      console.log("good job", result);
+
+  function searchPersonInSRA (cedula) {
+    function onSuccess (result) {
+      console.log('good job', result)
       if (result) {
-        var resultObject = JSON.parse(result);
+        var resultObject = JSON.parse(result)
         if (resultObject.titulo.length > 0 && resultObject.nombre.length > 0) {
-          return loadSRAPersonInForm(resultObject);
-        }else{
-          $(".ui.form").removeClass("loading");
-          return null;
+          return loadSRAPersonInForm(resultObject)
+        } else {
+          $('.ui.form').removeClass('loading')
+          return null
         }
       }
     }
-  
-    return google.script.run.withSuccessHandler(onSuccess).getSRAPerson(cedula);
-  }
-  
 
-  function testing(){
-    var users = [
-      
-      ]
-    
-    users.map(function(user, i){
-         checkStatus(user)
+    return google.script.run.withSuccessHandler(onSuccess).getSRAPerson(cedula)
+  }
+
+  function testing () {
+    var users = []
+
+    users.map(function (user, i) {
+      checkStatus(user)
     })
-      
   }
-  
-  function checkStatus(user){
-      var result = searchPersonInSRA(user)
-      if(result){
-          console.log('OK :D')
-      }else {
-          console.log('NOT OK :|')
-      }  
+
+  function checkStatus (user) {
+    var result = searchPersonInSRA(user)
+    if (result) {
+      console.log('OK :D')
+    } else {
+      console.log('NOT OK :|')
+    }
   }
-    
-  
-  function formValidation() {
-    $(".ui.form").form({
+
+  function formValidation () {
+    $('.ui.form').form({
       inline: true,
-      on: "blur",
-      transition: "fade down",
+      on: 'blur',
+      transition: 'fade down',
       onSuccess: validationpassed,
       fields: {
         nombres: {
-          identifier: "nombres",
+          identifier: 'nombres',
           rules: [
             {
-              type: "empty",
-              prompt: "Por favor ingrese un nombre"
+              type: 'empty',
+              prompt: 'Por favor ingrese un nombre'
             }
           ]
         },
         apellidos: {
-          identifier: "apellidos",
+          identifier: 'apellidos',
           rules: [
             {
-              type: "empty",
-              prompt: "Por favor ingrese un apellido"
+              type: 'empty',
+              prompt: 'Por favor ingrese un apellido'
             }
           ]
         },
         cedula: {
-          identifier: "cedula",
+          identifier: 'cedula',
           rules: [
             {
-              type: "number",
-              prompt: "Por favor ingrese una cedula valido"
+              type: 'number',
+              prompt: 'Por favor ingrese una cedula valido'
             },
             {
-              type: "empty",
-              prompt: "Por favor ingrese una cedula"
+              type: 'empty',
+              prompt: 'Por favor ingrese una cedula'
             }
           ]
         },
         celular: {
-          identifier: "celular",
+          identifier: 'celular',
           rules: [
             {
-              type: "number",
-              prompt: "Por favor ingrese un numero valido"
+              type: 'number',
+              prompt: 'Por favor ingrese un numero valido'
             },
             {
-              type: "empty",
-              prompt: "Por favor ingrese un numero"
+              type: 'empty',
+              prompt: 'Por favor ingrese un numero'
             }
           ]
         },
         email: {
-          identifier: "correo",
+          identifier: 'correo',
           rules: [
             {
-              type: "email",
-              prompt: "Por favor ingrese a correo valido"
+              type: 'email',
+              prompt: 'Por favor ingrese a correo valido'
             },
             {
-              type: "empty",
-              prompt: "Por favor ingrese un correo"
+              type: 'empty',
+              prompt: 'Por favor ingrese un correo'
             }
           ]
         },
         programa: {
-          identifier: "programa",
+          identifier: 'programa',
           rules: [
             {
-              type: "empty",
-              prompt: "Por favor ingrese un programa"
+              type: 'empty',
+              prompt: 'Por favor ingrese un programa'
             }
           ]
         },
-  
+
         politicas: {
-          identifier: "politicas",
+          identifier: 'politicas',
           rules: [
             {
-              type: "checked",
-              prompt: "Por favor acepte nuestras politicas para inscribirse"
+              type: 'checked',
+              prompt: 'Por favor acepte nuestras politicas para inscribirse'
             }
           ]
         },
         facultad: {
-          identifier: "facultad",
+          identifier: 'facultad',
           rules: [
             {
-              type: "empty",
-              prompt: "Por favor ingrese una facultad"
+              type: 'empty',
+              prompt: 'Por favor ingrese una facultad'
             }
           ]
         }
       }
-    });
+    })
   }
-  
-  </script>
+</script>
