@@ -1,212 +1,263 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <base target="_top" />
+    <meta http-equiv="Content-Security-Policy" content="connect-src http:" />
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"
+    />
+    <style>
+      #navbar {
+        margin-bottom: 60px;
+      }
 
-<head>
-  <base target="_top">
-  <meta http-equiv="Content-Security-Policy" content="connect-src http:">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
-  <style>
+      #pay-info {
+        display: none;
+      }
 
-    #navbar {
-    margin-bottom: 60px;
-  }
+      #main-content {
+        margin-top: 60px;
+      }
 
-  #pay-info{
-    display: none;
-  }
+      input:not([name='correo']) {
+        text-transform: uppercase;
+      }
 
-  #main-content {
-    margin-top: 60px ;
-  }
+      input[name='correo'] {
+        text-transform: lowercase;
+      }
 
-  input:not([name='correo']) {
-    text-transform: uppercase
-  }
+      ::placeholder {
+        text-transform: none;
+      }
 
-  input[name='correo']{
-    text-transform: lowercase;
-  }
+      #mainForm {
+        display: none;
+      }
 
-  ::placeholder {
-    text-transform: none;
-  }
+      .ui.modal {
+        position: fixed !important;
+        top: 40% !important;
+        left: 15% !important;
+        width: 70%;
+      }
 
-  #mainForm {
-    display: none;
-  }
+      #id-search {
+        margin-top: 20px;
+      }
 
-  .ui.modal{
-    position: fixed !important;
-    top: 40% !important;
-    left: 15% !important;
-    width:70%;
-  }
+      .not-allowed {
+        cursor: not-allowed !important;
+      }
 
-  #id-search {
-    margin-top: 20px;
-  }
+      .not-visible {
+        display: none !important;
+      }
 
-  .not-allowed {
-    cursor: not-allowed  !important;
-  }
+      .visible {
+        display: block !important;
+      }
 
-  .not-visible{
-    display: none !important;
-  }
+      .ui.disabled.dropdown,
+      .ui.dropdown .menu > .disabled.item {
+        opacity: 0.8 !important;
+      }
 
-  .visible{
-    display: block !important;
-  }
+      @media (max-width: 767px) {
+        .modal.tiny {
+          width: 70% !important;
+        }
+      }
+    </style>
+  </head>
 
-
-  .ui.disabled.dropdown, .ui.dropdown .menu>.disabled.item{
-    opacity:0.8 !important;
-  }
-
-  @media (max-width: 767px) {
-  .modal.tiny {
-    width: 70% !important;
-  }
-}
-  </style>
-</head>
-
-<body>
-  <div id="navbar" class="ui fixed inverted menu red">
-    <div class="ui container">
-      <h3 class="header item">
-        <img class="logo" src="http://www.univalle.edu.co/images/logo-footer.png">&nbsp;&nbsp;Noche de Gala Egresados
-        2018
-      </h3>
-    </div>
-  </div>
-
-  <div id="main-content" class="ui main container middle center grid">
-    <div class="one column row fluid" id="id-search">
-      <div id="search-container" class="twelve wide column">
-        <div class="ui fluid action input large">
-          <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Ingrese su numero de cédula..."
-            type="text">
-          <button id="btn-search" tabindex="0" class="ui red button" onclick="searchForPerson()">
-            Continuar
-          </button>
-        </div>
-      </div>
-      <div class="four wide column">
-        <div id="search-msg" class="ui message hidden"></div>
+  <body>
+    <div id="navbar" class="ui fixed inverted menu red">
+      <div class="ui container">
+        <h3 class="header item">
+          <img
+            class="logo"
+            src="http://www.univalle.edu.co/images/logo-footer.png"
+          />&nbsp;&nbsp;Noche de Gala Egresados 2018
+        </h3>
       </div>
     </div>
-    <div class="row">
 
-      <div id="mainForm" class="twelve wide center column">
-        <div id="pay-msg" class="ui success message not-visible">
+    <div id="main-content" class="ui main container middle center grid">
+      <div class="one column row fluid" id="id-search">
+        <div id="search-container" class="twelve wide column">
+          <div class="ui fluid action input large">
+            <input
+              id="busca-cedula"
+              name="busca-cedula"
+              class="numeric"
+              placeholder="Ingrese su numero de cédula..."
+              type="text"
+            />
+            <button
+              id="btn-search"
+              tabindex="0"
+              class="ui red button"
+              onclick="searchForPerson()"
+            >
+              Iniciar proceso de inscripción
+            </button>
+          </div>
         </div>
-        <form class="ui form attached fluid segment">
-          <div class="ui error message"><i class="close icon"></i></div>
+        <div class="four wide column">
+          <div id="search-msg" class="ui message hidden"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div id="mainForm" class="twelve wide center column">
+          <div id="pay-msg" class="ui success message not-visible"></div>
+          <form class="ui form attached fluid segment">
+            <div class="ui error message"><i class="close icon"></i></div>
 
-          <h4 class="ui dividing header">Información General</h4>
-          <div class="field">
+            <h4 class="ui dividing header">Información General</h4>
+            <div class="field">
+              <div class="fields">
+                <div class="sixteen wide field">
+                  <label>Número de Cédula</label>
+                  <input
+                    class="numeric"
+                    name="cedula"
+                    placeholder="Numero de documento"
+                    type="text"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="two fields">
+                <div class="field">
+                  <label>Nombres</label>
+                  <input name="nombres" placeholder="Nombres" type="text" />
+                </div>
+                <div class="field">
+                  <label>Apellidos</label>
+                  <input name="apellidos" placeholder="Apellidos" type="text" />
+                </div>
+              </div>
+            </div>
+
+            <div class="fields regreso">
+              <div class="ten wide field">
+                <label>Programa Académico del Cual Egresó</label>
+                <select name="programa" class="ui dropdown search"> </select>
+              </div>
+              <div class="six wide field">
+                <label>Facultad</label>
+                <select name="facultad" class="ui dropdown search"> </select>
+              </div>
+            </div>
+
             <div class="fields">
-              <div class="sixteen wide field">
-                <label>Número de Cédula</label>
-                <input class="numeric" name="cedula" placeholder="Numero de documento" type="text">
+              <div class="twelve wide field">
+                <label>Correo Electrónico</label>
+                <input
+                  name="correo"
+                  placeholder="Correo Electronico"
+                  type="text"
+                />
+              </div>
+              <div class="four wide field">
+                <label>Télefono Celular</label>
+                <input
+                  name="celular"
+                  class="numeric"
+                  placeholder="Telefono"
+                  type="text"
+                />
               </div>
             </div>
-          </div>
-
-          <div class="field">
-            <div class="two fields">
-              <div class="field">
-                <label>Nombres</label>
-                <input name="nombres" placeholder="Nombres" type="text">
-              </div>
-              <div class="field">
-                <label>Apellidos</label>
-                <input name="apellidos" placeholder="Apellidos" type="text">
-              </div>
+            <div class="field file-field">
+              <label for="doc_file"
+                >Documento de validez que es Egresado(carnet, acta de grado,
+                diploma).</label
+              >
+              <input type="file" id="doc_file" name="doc_file" />
             </div>
-          </div>
-
-          <div class="fields regreso">
-            <div class="ten wide field">
-              <label>Programa Académico del Cual Egresó</label>
-              <select name="programa" class="ui dropdown search">
-              </select>
-            </div>
-            <div class="six wide field">
-              <label>Facultad</label>
-              <select name="facultad" class="ui dropdown search">
-              </select>
-            </div>
-          </div>
-
-          <div class="fields">
-            <div class="twelve wide field">
-              <label>Correo Electrónico</label>
-              <input name="correo" placeholder="Correo Electronico" type="text">
-            </div>
-            <div class="four wide field">
-              <label>Télefono Celular</label>
-              <input name="celular" class="numeric" placeholder="Telefono" type="text">
-            </div>
-          </div>
-          <div class="field file-field">
-            <label for="doc_file">Documento de validez que es Egresado(carnet, acta de grado, diploma).</label>
-            <input type="file" id="doc_file" name="doc_file" />
-          </div>
-          <br>
-          <div class="field">
+            <br />
+            <!-- <div class="field">
             <div class="ui checkbox">
               <input name="cena_vegana" type="checkbox">
               <label>Prefiero cena vegana</label>
             </div>
-          </div>
-          <div class="field content">
-            <div class="ui checkbox">
-              <input name="politicas" type="checkbox">
-              <label>Acepto las <a target="_blank" href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf">Políticas
-                  de tratamiento de datos de la Universidad del Valle</a></label>
+          </div> -->
+            <div class="field content">
+              <div class="ui checkbox">
+                <input name="politicas" type="checkbox" />
+                <label
+                  >Acepto las
+                  <a
+                    target="_blank"
+                    href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf"
+                    >Políticas de tratamiento de datos de la Universidad del
+                    Valle</a
+                  ></label
+                >
+              </div>
             </div>
+            <div
+              id="submit-btn"
+              name="submit-btn "
+              class="ui submit red button"
+            >
+              continuar
+            </div>
+
+            <a
+              class="ui red not-visible button"
+              id="register-pay-btn"
+              name="register-pay-btn"
+              onclick="submitPayment()"
+              target=" _blank"
+              href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210"
+              >Generar pago</a
+            >
+          </form>
+
+          <div class="ui bottom attached warning message">
+            <i class="icon help"></i>
+            Si presenta alguna dificultad en el proceso de inscripción, por
+            favor escribanos al correo electrónico
+            soyegresado@correounivalle.edu.co
           </div>
-          <div id="submit-btn" name="submit-btn " class="ui submit red button">continuar</div>
-
-          <a class="ui red not-visible button" id="register-pay-btn" name="register-pay-btn" onclick="submitPayment()"
-            target=" _blank" href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">Generar
-            pago</a>
-        </form>
-
-        <div class="ui bottom attached warning message">
-          <i class="icon help"></i>
-          Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico
-          soyegresado@correounivalle.edu.co
         </div>
-      </div>
-      <div class="ui tiny modal">
-        <i class="close icon" onclick="location.reload('true')"></i>
-        <div class="header success">
-          Usuario Registrado Satisfactoriamente!
-        </div>
-        <div class="content">
-          <div id="result-msg" class="ui success message">
-
+        <div class="ui tiny modal">
+          <i class="close icon" onclick="location.reload('true')"></i>
+          <div class="header success">
+            Usuario Registrado Satisfactoriamente!
           </div>
+          <div class="content">
+            <div id="result-msg" class="ui success message"></div>
 
-          <div class="actions">
-            <a id="modal-payment" class="ui red right labeled icon button" onclick="modalPayment()" target=" _blank"
-              href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">
-              Generar pago
-            </a>
+            <div class="actions">
+              <a
+                id="modal-payment"
+                class="ui red right labeled icon button"
+                onclick="modalPayment()"
+                target=" _blank"
+                href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210"
+              >
+                Generar pago
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
-  <?!= include('main'); ?>
-</body>
-
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+    <?!= include('main'); ?>
+  </body>
 </html>
