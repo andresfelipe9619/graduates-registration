@@ -1,6 +1,5 @@
-const GENERAL_DB = "https://docs.google.com/spreadsheets/d/1fLFRTUrQ9mRUt0MPZ17wUAIWXhpq2Ah8l_mWhQsGUXQ/edit?usp=sharing"
-const PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing"
-const API_URL = "https://gentle-shore-15094.herokuapp.com/"
+const PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing";
+const API_URL = "https://gentle-shore-15094.herokuapp.com/";
 
 function doGet(request) {
     return HtmlService.createTemplateFromFile("index.html")
@@ -11,30 +10,6 @@ function doGet(request) {
 function include(filename) {
     return HtmlService.createHtmlOutputFromFile(filename)
         .getContent();
-}
-
-function getSheetFromSpreadSheet(url, sheet) {
-    let Spreedsheet = SpreadsheetApp.openByUrl(url);
-    if (url && sheet) return Spreedsheet.getSheetByName(sheet);
-}
-
-function getRawDataFromSheet(url, sheet) {
-    let mSheet = getSheetFromSpreadSheet(url, sheet);
-    if (mSheet) return mSheet.getSheetValues(1, 1, mSheet.getLastRow(), mSheet.getLastColumn());
-}
-
-function getPrograms() {
-    let programsSheet = getRawDataFromSheet(PROGRAMAS, "PROGRAMAS")
-    let programsObjects = sheetValuesToObject(programsSheet)
-    // logFunctionOutput(getPrograms.name, programsObjects)
-    return programsObjects
-}
-
-function getPeopleRegistered() {
-    let peopleSheet = getRawDataFromSheet(GENERAL_DB, "INSCRITOS")
-    let peopleObjects = sheetValuesToObject(peopleSheet)
-    // logFunctionOutput(getPeopleRegistered.name, peopleObjects)
-    return peopleObjects
 }
 
 function searchPerson(cedula) {
@@ -63,14 +38,13 @@ function registerPerson(person) {
 }
 
 function getSRAPerson(cedula) {
-
-    let options = {
+    const options = {
         'method': 'post',
         'contentType': 'application/x-www-form-urlencoded',
         'payload': 'cedula=' + cedula,
         'validateHttpsCertificates': false
     }
-    let result = UrlFetchApp.fetch(API_URL, options).getContentText();
+    const result = UrlFetchApp.fetch(API_URL, options).getContentText();
     logFunctionOutput(getSRAPerson.name, result)
 
     return result;
@@ -113,119 +87,57 @@ function getFacultiesFromPrograms(programs) {
             faculties.push(programs[program].facultad)
         }
     }
-
     return faculties
 }
 
+export function getPeopleRegisteredSheet() {
+    const sheet = global.getSheetFromSpreadSheet('COMMENTS');
+    const headers = global.getHeadersFromSheet(sheet);
+    return { sheet, headers };
+}
+
 function validatePerson(cedula) {
-    let inscritos = getPeopleRegistered();
-    // let res = ""
+    let { sheet, headers } = getPeopleRegisteredSheet();
     let result = {
         isRegistered: false,
         index: -1,
         data: null,
     };
-
-    for (let person in inscritos) {
-        if (String(inscritos[person].cedula) === String(cedula)) {
-            result.isRegistered = true
-            result.index = person
-            result.data = inscritos[person]
-        }
-    }
-
+    const { index } = global.findText({ sheet, text: cedula });
+    result.index = index;
     logFunctionOutput(validatePerson.name, result)
-
-    if (result.index > -1) {
-        return result
-    } else {
+    if (result.index === -1) {
         result.isRegistered = false
-        return result
+        return result;
     }
+    const entityRange = sheet.getSheetValues(
+        +index,
+        1,
+        1,
+        sheet.getLastColumn()
+    );
+    Logger.log(`${cedula} Range: ${entityRange.length}`);
+    Logger.log(entityRange);
+    const [entityData] = global.sheetValuesToObject(entityRange, headers);
+    Logger.log(`${cedula} Data:`);
+    Logger.log(entityData);
+    result.isRegistered = true
+    result.data = entityData
+    return result
 }
 
-function objectToSheetValues(object, headers) {
-    let arrayValues = new Array(headers.length)
-    let lowerHeaders = headers.map(function (item) {
-        return item.toLowerCase()
-    })
-
-    Logger.log('HEADERS')
-    Logger.log(lowerHeaders)
-    Logger.log('OBJECT')
-    Logger.log(object)
-    for (let item in object) {
-        for (let header in lowerHeaders) {
-            if (String(object[item].name) == String(lowerHeaders[header])) {
-                if (object[item].name == "nombres" || object[item].name == "apellidos") {
-                    arrayValues[header] = object[item].value.toUpperCase()
-                    Logger.log(arrayValues)
-                } else {
-                    arrayValues[header] = object[item].value
-                    Logger.log(arrayValues)
-                }
-            }
-        }
-    }
-    //logFunctionOutput(objectToSheetValues.name, arrayValues)
-    return arrayValues
+function getEntityData(entity) {
+    const rawEntities = global.getRawDataFromSheet(entity);
+    const entities = global.sheetValuesToObject(rawEntities);
+    return entities;
 }
 
-function getCurrentFolder(name, mainFolder) {
-    //se crea la carpeta que va conener todos los docmuentos
-    let nameFolder = "documentos";
-    let FolderFiles,
-        folders = mainFolder.getFoldersByName(nameFolder);
-    if (folders.hasNext()) {
-        FolderFiles = folders.next();
-    } else {
-        FolderFiles = mainFolder.createFolder(nameFolder);
-    }
-
-    // se crea la carpeta que va contener los documentos de cada inscrito
-    let currentFolder,
-        folders = FolderFiles.getFoldersByName(name);
-    if (folders.hasNext()) {
-        currentFolder = folders.next();
-    } else {
-        currentFolder = FolderFiles.createFolder(name);
-    }
-
-    return currentFolder;
+function getPrograms() {
+    return getEntityData('PROGRAMAS');
 }
 
-function getMainFolder() {
-    let dropbox = "Cena Gala";
-    let mainFolder,
-        folders = DriveApp.getFoldersByName(dropbox);
-
-    if (folders.hasNext()) {
-        mainFolder = folders.next();
-    } else {
-        mainFolder = DriveApp.createFolder(dropbox);
-    }
-    return mainFolder;
-}
-
-function createStudentFolder(numdoc, data) {
-    //se crea la carpeta que va contener los arhivos actuales
-    let result = {
-        url: '',
-        file: ''
-    }
-    let mainFolder = getMainFolder();
-    let currentFolder = getCurrentFolder(numdoc, mainFolder);
-    result.url = currentFolder.getUrl();
-
-    let contentType = data.substring(5, data.indexOf(';')),
-        bytes = Utilities.base64Decode(data.substr(data.indexOf('base64,') + 7)),
-        blob = Utilities.newBlob(bytes, contentType, file);
-
-    let file = currentFolder.createFile(blob);
-    file.setDescription("Subido Por " + numdoc);
-    file.setName(numdoc + "_documento");
-    result.file = file.getName();
-    return result;
+function getPeopleRegistered() {
+    return getEntityData('INSCRITOS');
 }
 
 function generatePayment(index) {
@@ -237,26 +149,6 @@ function generatePayment(index) {
     logFunctionOutput(generatePayment.name, inscritosSheet.getRange(index, pagoIndex).getValues())
     inscritosSheet.getRange(index + 1, pagoIndex + 1).setValues([['SI']])
     return true
-}
-
-function sheetValuesToObject(sheetValues) {
-    let headings = sheetValues[0].map(String.toLowerCase);
-    let people = sheetValues.slice(1);
-    let peopleWithHeadings = addHeadings(people, headings);
-
-    function addHeadings(people, headings) {
-        return people.map(function (personAsArray) {
-            let personAsObj = {};
-
-            headings.forEach(function (heading, i) {
-                personAsObj[heading] = personAsArray[i];
-            });
-
-            return personAsObj;
-        });
-    }
-    // logFunctionOutput(sheetValuesToObject.name, peopleWithHeadings)
-    return peopleWithHeadings;
 }
 
 function logFunctionOutput(functionName, returnValue) {
