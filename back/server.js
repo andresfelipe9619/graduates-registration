@@ -1,4 +1,4 @@
-const GENERAL_DB = "https://docs.google.com/spreadsheets/d/1s4fI_h4lKP8TUW_3iVTLDxZQOyXCMNUhuRhM1C7bNOA/edit?usp=sharing"
+const GENERAL_DB = "https://docs.google.com/spreadsheets/d/1fLFRTUrQ9mRUt0MPZ17wUAIWXhpq2Ah8l_mWhQsGUXQ/edit?usp=sharing"
 const PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing"
 const API_URL = "https://gentle-shore-15094.herokuapp.com/"
 
