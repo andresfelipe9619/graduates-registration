@@ -38,6 +38,15 @@
     })
   }
 
+  function errorHandler (error) {
+    console.log('Error Handler ==>', error)
+    var mForm = $('.ui.form')
+    mForm.removeClass('loading')
+    var errorBox = $('.ui.error.message')
+    errorBox.removeClass('not-visible')
+    errorBox.text(error.toString())
+  }
+
   function validationpassed (e) {
     try {
       e.preventDefault()
@@ -58,6 +67,7 @@
           }
           google.script.run
             .withSuccessHandler(onSuccess)
+            .withFailureHandler(errorHandler)
             .createStudentFolder(
               $("input[name='cedula']").val(),
               e.target.result
@@ -68,7 +78,7 @@
         addPayment(formData)
       }
     } catch (error) {
-      $('.ui.error.message').text(error.toString())
+      errorHandler(error)
     }
   }
 
@@ -105,7 +115,8 @@
 
         $('#result-msg').text('')
         $('#result-msg').text(
-          'Su inscripción a la Cena de Gala Egresados 2018 fue realizada de manera exitosa. Recuerde que usted cuenta con 48 horas para generar su pago. Pasadas estas 48 horas, el sistema deshabilitará la inscripción.'
+          `Su inscripción a la Cena de Gala Egresados ${new Date().getFullYear()} 
+          fue realizada de manera exitosa. Recuerde que usted cuenta con 48 horas para generar su pago. Pasadas estas 48 horas, el sistema deshabilitará la inscripción.`
         )
         $('.ui.modal').modal('show')
         $('.actions').css('display', 'block')
@@ -114,7 +125,10 @@
       }
     }
     console.log(formData)
-    google.script.run.withSuccessHandler(onSuccess).registerPerson(formData)
+    google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(errorHandler)
+      .registerPerson(formData)
   }
 
   function searchForPerson () {
@@ -141,7 +155,10 @@
 
     var cedula = $('#busca-cedula').val()
     if (cedula.length > 0) {
-      google.script.run.withSuccessHandler(onSuccess).searchPerson(cedula)
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(errorHandler)
+        .searchPerson(cedula)
     } else {
       $('#btn-search').removeClass('loading')
       $('#search-msg').html('Por favor ingrese una cedula')
@@ -270,6 +287,7 @@
       }
       return google.script.run
         .withSuccessHandler(onSuccess)
+        .withFailureHandler(errorHandler)
         .getFacultiesAndPrograms()
     }
   }
@@ -294,19 +312,19 @@
       $('#pay-msg').removeClass('warning')
       $('#pay-msg').addClass('success')
       $('#pay-msg').append(`<i class="icon check circle"></i>
-          El pago de su inscripción a la Noche de Gala de Egresados fue registrado satisfactoriamente. Le esperamos el
-          próximo 23 de Noviembre de 2018.
-          Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co
-        </div>`)
+            El pago de su inscripción a la Noche de Gala de Egresados fue registrado satisfactoriamente. Le esperamos el
+            próximo 23 de Noviembre de 2018.
+            Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co
+          </div>`)
     } else {
       $('#pay-msg').removeClass('not-visible')
       $('#pay-msg').removeClass('success')
       $('#pay-msg').addClass('warning')
 
       $('#pay-msg').append(`<i class="icon warning "></i>
-          El pago de su inscripción aun no ha sido registrado. Recuerde que después de 48 horas sin registrar el pago, el sistema anulará su inscripción.
-          Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co
-        </div>`)
+            El pago de su inscripción aun no ha sido registrado. Recuerde que después de 48 horas sin registrar el pago, el sistema anulará su inscripción.
+            Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co
+          </div>`)
     }
 
     $('.ui.dropdown').addClass('disabled')
@@ -337,6 +355,7 @@
             }
             return google.script.run
               .withSuccessHandler(fullSuccess)
+              .withFailureHandler(errorHandler)
               .generatePayment(personIndex)
           }
         }
@@ -350,6 +369,7 @@
     if (cedula.length > 0) {
       return google.script.run
         .withSuccessHandler(onSuccess)
+        .withFailureHandler(errorHandler)
         .searchPerson(cedula)
     }
   }
@@ -374,6 +394,7 @@
       }
       return google.script.run
         .withSuccessHandler(onSuccess)
+        .withFailureHandler(errorHandler)
         .generatePayment(personIndex)
     }
   }
@@ -436,7 +457,10 @@
         })
       }
     }
-    google.script.run.withSuccessHandler(onSuccess).getFacultiesAndPrograms()
+    google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(errorHandler)
+      .getFacultiesAndPrograms()
   }
 
   function searchPersonInSRA (cedula) {
@@ -453,7 +477,10 @@
       }
     }
 
-    return google.script.run.withSuccessHandler(onSuccess).getSRAPerson(cedula)
+    return google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(errorHandler)
+      .getSRAPerson(cedula)
   }
 
   function testing () {
