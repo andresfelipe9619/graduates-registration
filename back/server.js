@@ -1,5 +1,5 @@
-const PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing";
 const API_URL = "https://gentle-shore-15094.herokuapp.com/";
+const PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing";
 
 function doGet(request) {
     return HtmlService.createTemplateFromFile("index.html")
@@ -19,20 +19,20 @@ function searchPerson(cedula) {
 }
 
 function registerPerson(person) {
-    let inscritosSheet = getSheetFromSpreadSheet(GENERAL_DB, "INSCRITOS");
-    let headers = inscritosSheet.getSheetValues(1, 1, 1, inscritosSheet.getLastColumn())[0];
+    let { sheet: inscritosSheet, headers } = getPeopleRegisteredSheet();
     person.push({ name: "hora_registro", value: new Date() })
     person.push({ name: "pago_comprobado", value: "NO" })
 
-    logFunctionOutput('perosn', person)
+    logFunctionOutput('Person: ', person)
 
     let personValues = objectToSheetValues(person, headers)
-    let finalValues = personValues.map(function (value) {
-        return String(value)
-    })
+    let finalValues = personValues.map((value) => String(value))
 
     inscritosSheet.appendRow(finalValues)
     let result = { data: finalValues, ok: true }
+    let [nombres, apellidos, cedula, correo, celular] = finalValues
+    let dataObj = { nombres, apellidos, cedula, correo, celular }
+    sendRegistrationEmail({ person: dataObj })
     logFunctionOutput(registerPerson.name, result)
     return result;
 }
@@ -59,19 +59,10 @@ function getFacultiesAndPrograms() {
     let lastPrograms = []
     let esta = false
 
-    for (let program in programs) {
-        for (let last in lastPrograms) {
-            if (String(programs[program].nombre) === String(lastPrograms[last].nombre)) {
-                esta = true
-                break
-            } else {
-                esta = false
-            }
-        }
-        if (!esta) {
-            lastPrograms.push(programs[program])
-        }
-    }
+    programs.forEach((program) => {
+        esta = lastPrograms.find((last) => String(program.nombre) === String(last.nombre))
+        if (!esta) lastPrograms.push(program)
+    })
     result.faculties = getFacultiesFromPrograms(programs)
     result.programs = lastPrograms
     //logFunctionOutput(getFacultiesAndPrograms.name, result)
@@ -79,20 +70,20 @@ function getFacultiesAndPrograms() {
 }
 
 function getFacultiesFromPrograms(programs) {
-    let faculties = []
-    for (let program in programs) {
-        if (faculties.indexOf(programs[program].facultad) < 0) {
+    let faculties = programs.reduce((acc, program) => {
+        if (acc.indexOf(program.facultad) < 0) {
             Logger.log('FACULTAD QUE NO ESTA')
-            Logger.log(programs[program].facultad)
-            faculties.push(programs[program].facultad)
+            Logger.log(program.facultad)
+            acc.push(program.facultad)
         }
-    }
+        return acc;
+    }, [])
     return faculties
 }
 
-export function getPeopleRegisteredSheet() {
-    const sheet = global.getSheetFromSpreadSheet('COMMENTS');
-    const headers = global.getHeadersFromSheet(sheet);
+function getPeopleRegisteredSheet() {
+    const sheet = getSheetFromSpreadSheet('INSCRITOS');
+    const headers = getHeadersFromSheet(sheet);
     return { sheet, headers };
 }
 
@@ -103,7 +94,9 @@ function validatePerson(cedula) {
         index: -1,
         data: null,
     };
-    const { index } = global.findText({ sheet, text: cedula });
+    const { index } = findText({ sheet, text: cedula });
+    console.log(`Cedula: `, cedula)
+    console.log(`Index: `, index)
     result.index = index;
     logFunctionOutput(validatePerson.name, result)
     if (result.index === -1) {
@@ -118,7 +111,7 @@ function validatePerson(cedula) {
     );
     Logger.log(`${cedula} Range: ${entityRange.length}`);
     Logger.log(entityRange);
-    const [entityData] = global.sheetValuesToObject(entityRange, headers);
+    const [entityData] = sheetValuesToObject(entityRange, headers);
     Logger.log(`${cedula} Data:`);
     Logger.log(entityData);
     result.isRegistered = true
@@ -126,14 +119,14 @@ function validatePerson(cedula) {
     return result
 }
 
-function getEntityData(entity) {
-    const rawEntities = global.getRawDataFromSheet(entity);
-    const entities = global.sheetValuesToObject(rawEntities);
+function getEntityData(entity, url) {
+    const rawEntities = getRawDataFromSheet(entity, url);
+    const entities = sheetValuesToObject(rawEntities);
     return entities;
 }
 
 function getPrograms() {
-    return getEntityData('PROGRAMAS');
+    return getEntityData('PROGRAMAS', PROGRAMAS);
 }
 
 function getPeopleRegistered() {

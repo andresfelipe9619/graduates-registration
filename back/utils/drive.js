@@ -44,7 +44,7 @@ function createDriveFile({ id, folder, blob }) {
   return result;
 }
 
-export function createStudentFolder(id, fileData) {
+function createStudentFolder(id, fileData) {
   const currentFolder = getFilesFolder();
   const blob = base64ToBlob(fileName, fileData);
   const result = createDriveFile({ id, blob, folder: currentFolder });
