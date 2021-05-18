@@ -1,4 +1,4 @@
-const API_URL = "https://gentle-shore-15094.herokuapp.com/";
+const API_URL = "http://gospelgeek.com.co/scriptsuv/index.php";
 const PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing";
 
 function doGet(request) {
