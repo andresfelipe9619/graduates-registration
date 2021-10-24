@@ -1,8 +1,10 @@
 const API_URL = "http://gospelgeek.com.co/scriptsuv/index.php";
 const PROGRAMAS = "https://docs.google.com/spreadsheets/d/1JBq9HT1yLVKGmpiB6fpOc6Lf0kqoZBziya0M5_dTjbo/edit?usp=sharing";
+const today = new Date();
+const year = today.getFullYear();
 
 function doGet(request) {
-    return HtmlService.createTemplateFromFile("index.html")
+    return HtmlService.createTemplateFromFile("front/index.html")
         .evaluate() // evaluate MUST come before setting the Sandbox mode
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }

@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <base target="_top" />
     <meta http-equiv="Content-Security-Policy" content="connect-src http:" />
-    <link
-      rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"
-    />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
     <style>
       #navbar {
         margin-bottom: 60px;
@@ -60,7 +58,7 @@
       }
 
       .ui.disabled.dropdown,
-      .ui.dropdown .menu > .disabled.item {
+      .ui.dropdown .menu>.disabled.item {
         opacity: 0.8 !important;
       }
 
@@ -76,10 +74,8 @@
     <div id="navbar" class="ui fixed inverted menu red">
       <div class="ui container">
         <h3 class="header item">
-          <img
-            class="logo"
-            src="http://www.univalle.edu.co/images/logo-footer.png"
-          />&nbsp;&nbsp;Videoconferencia Egresados 2021
+          <img class="logo" alt="Logo Universidad del Valle"
+            src="http://www.univalle.edu.co/images/logo-footer.png" />&nbsp;&nbsp;Cena Egresados 2021
         </h3>
       </div>
     </div>
@@ -88,19 +84,9 @@
       <div class="one column row fluid" id="id-search">
         <div id="search-container" class="twelve wide column">
           <div class="ui fluid action input large">
-            <input
-              id="busca-cedula"
-              name="busca-cedula"
-              class="numeric"
-              placeholder="Ingrese su numero de cédula..."
-              type="text"
-            />
-            <button
-              id="btn-search"
-              tabindex="0"
-              class="ui red button"
-              onclick="searchForPerson()"
-            >
+            <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Ingrese su numero de cédula..."
+              type="text" />
+            <button id="btn-search" tabindex="0" class="ui red button" onclick="searchForPerson()">
               Iniciar proceso de inscripción
             </button>
           </div>
@@ -121,12 +107,8 @@
               <div class="fields">
                 <div class="sixteen wide field">
                   <label>Número de Cédula</label>
-                  <input
-                    class="numeric"
-                    name="cedula"
-                    placeholder="Numero de documento"
-                    type="text"
-                  />
+                  <input class="numeric" name="cedula" aria-label="Número de documento"
+                    placeholder="Número de documento" type="text" />
                 </div>
               </div>
             </div>
@@ -135,11 +117,11 @@
               <div class="two fields">
                 <div class="field">
                   <label>Nombres</label>
-                  <input name="nombres" placeholder="Nombres" type="text" />
+                  <input name="nombres" aria-label="Nombres" placeholder="Nombres" type="text" />
                 </div>
                 <div class="field">
                   <label>Apellidos</label>
-                  <input name="apellidos" placeholder="Apellidos" type="text" />
+                  <input name="apellidos" aria-label="Apellidos" placeholder="Apellidos" type="text" />
                 </div>
               </div>
             </div>
@@ -158,67 +140,43 @@
             <div class="fields">
               <div class="twelve wide field">
                 <label>Correo Electrónico</label>
-                <input
-                  name="correo"
-                  placeholder="Correo Electronico"
-                  type="text"
-                />
+                <input name="correo" aria-label="Correo Electrónico" placeholder="Correo Electrónico" type="text" />
               </div>
               <div class="four wide field">
                 <label>Télefono Celular</label>
-                <input
-                  name="celular"
-                  class="numeric"
-                  placeholder="Telefono"
-                  type="text"
-                />
+                <input name="celular" class="numeric" aria-label="Teléfono" placeholder="Teléfono" type="text" />
               </div>
             </div>
             <div class="field file-field">
-              <label for="doc_file"
-                >Documento de validez que es Egresado(carnet, acta de grado,
-                diploma).</label
-              >
+              <label for="doc_file">Documento de validez que es Egresado(carnet, acta de grado,
+                diploma).</label>
               <input type="file" id="doc_file" name="doc_file" />
             </div>
             <br />
             <!-- <div class="field">
             <div class="ui checkbox">
-              <input name="cena_vegana" type="checkbox">
+              <input name="cena_vegana" type="checkbox" aria-label="cena vegana">
               <label>Prefiero cena vegana</label>
             </div>
           </div> -->
             <div class="field content">
               <div class="ui checkbox">
-                <input name="politicas" type="checkbox" />
-                <label
-                  >Acepto las
-                  <a
-                    target="_blank"
-                    href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf"
-                    >Políticas de tratamiento de datos de la Universidad del
-                    Valle</a
-                  ></label
-                >
+                <input name="politicas" type="checkbox" aria-label="politicas" />
+                <label>Acepto las
+                  <a target="_blank"
+                    href="http://uvsalud.univalle.edu.co/pdf/politicas_institucionales/r_1172_reglamento_ptotecc_datos_personales.pdf">Políticas
+                    de tratamiento de datos de la Universidad del
+                    Valle</a></label>
               </div>
             </div>
-            <div
-              id="submit-btn"
-              name="submit-btn "
-              class="ui submit red button"
-            >
+            <div id="submit-btn" name="submit-btn " class="ui submit red button">
               Finalizar inscripción
             </div>
 
-            <a
-              class="ui red not-visible button"
-              id="register-pay-btn"
-              name="register-pay-btn"
-              onclick="submitPayment()"
+            <a class="ui red not-visible button" id="register-pay-btn" name="register-pay-btn" onclick="submitPayment()"
               target=" _blank"
-              href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210"
-              >Generar pago</a
-            >
+              href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">Generar
+              pago</a>
           </form>
 
           <div class="ui bottom attached warning message">
@@ -237,13 +195,8 @@
             <div id="result-msg" class="ui success message"></div>
 
             <div class="actions">
-              <a
-                id="modal-payment"
-                class="ui red right labeled icon button"
-                onclick="modalPayment()"
-                target=" _blank"
-                href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210"
-              >
+              <a id="modal-payment" class="ui red right labeled icon button" onclick="modalPayment()" target=" _blank"
+                href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=340&una_codigo=24&hash=c8371222b8308d4b339e33827de66a604990d210">
                 Generar pago
               </a>
             </div>
@@ -253,12 +206,10 @@
     </div>
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.1.1.min.js"
-      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
-    <?!= include('main'); ?>
+    <?!= include('front/main'); ?>
   </body>
+
 </html>

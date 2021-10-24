@@ -1,4 +1,4 @@
-const GENERAL_DB = "https://docs.google.com/spreadsheets/d/1fLFRTUrQ9mRUt0MPZ17wUAIWXhpq2Ah8l_mWhQsGUXQ/edit?usp=sharing";
+const GENERAL_DB = "https://docs.google.com/spreadsheets/d/1atvt1OAoWDMgZ-ouSqbiByRqbL-XgNUt4515okCJAWg/edit?usp=sharing";
 
 const getSheets = () => SpreadsheetApp.getActive().getSheets();
 
