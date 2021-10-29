@@ -136,7 +136,7 @@ function getPeopleRegistered() {
 }
 
 function generatePayment(index) {
-    let inscritosSheet = getSheetFromSpreadSheet(GENERAL_DB, "INSCRITOS");
+    let inscritosSheet = getSheetFromSpreadSheet("INSCRITOS");
     let headers = inscritosSheet.getSheetValues(1, 1, 1, inscritosSheet.getLastColumn())[0];
     let pagoIndex = headers.indexOf('PAGO_GENERADO')
     Logger.log(pagoIndex)

@@ -2,7 +2,7 @@
   $(document).ready(init_js)
   var buttonpressed
   var personIndex
-  function init_js () {
+  function init_js() {
     $('.submit.button').click(function () {
       buttonpressed = $(this).attr('name')
     })
@@ -38,7 +38,7 @@
     })
   }
 
-  function errorHandler (error) {
+  function errorHandler(error) {
     console.log('Error Handler ==>', error)
     var mForm = $('.ui.form')
     mForm.removeClass('loading')
@@ -47,7 +47,7 @@
     errorBox.text(error.toString())
   }
 
-  function validationpassed (e) {
+  function validationpassed(e) {
     try {
       e.preventDefault()
       var mForm = $('.ui.form')
@@ -59,7 +59,7 @@
         var reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onloadend = function (e) {
-          function onSuccess (result) {
+          function onSuccess(result) {
             if (result) {
               formData.push({ name: 'doc_file', value: result.url })
               addPayment(formData)
@@ -82,7 +82,7 @@
     }
   }
 
-  function addPayment (formData) {
+  function addPayment(formData) {
     console.log('all is ok', buttonpressed)
     // if (buttonpressed == "submit-btn") {
     formData.push({ name: 'pago_generado', value: 'NO' })
@@ -108,12 +108,14 @@
     registerPersonInSheet(formData)
   }
 
-  function registerPersonInSheet (formData) {
-    function onSuccess (response) {
+  function registerPersonInSheet(formData) {
+    function onSuccess(response) {
       if (response.ok) {
         $('.ui.form').removeClass('loading')
 
-        $('#result-msg').text('')
+        $("#result-msg").append(`Su inscripción a la Noche de Gala para Egresados 2021, se ha realizado satisfactoriamente. Usted cuenta
+          con 48 horas para realizar el pago.
+          De no realizar este pago en las próximas 48 horas, su cupo será liberado.`);
         $('.ui.modal').modal('show')
         $('.actions').css('display', 'block')
       } else {
@@ -127,7 +129,7 @@
       .registerPerson(formData)
   }
 
-  function searchForPerson () {
+  function searchForPerson() {
     hideForm()
     $('#btn-search').addClass('loading')
 
@@ -166,7 +168,7 @@
     }
   }
 
-  function disableFormFielfds (bool) {
+  function disableFormFielfds(bool) {
     if (bool) {
       $("input:not([name='busca-cedula'])").prop('readonly', true)
       $("input:not([name='busca-cedula'])").addClass('not-allowed')
@@ -202,7 +204,7 @@
     }
   })()
 
-  function loadSRAPersonInForm (person) {
+  function loadSRAPersonInForm(person) {
     console.log('PersonSRA in form', person)
     var full_name = person.nombre.split(' ')
     $("input[name='nombres']").val(
@@ -245,7 +247,7 @@
       console.log(firstProgramWord)
       console.log(lessWord)
       console.log(restFemenineWord)
-      function onSuccess (result) {
+      function onSuccess(result) {
         var isGood = false
         if (result) {
           $.each(result.programs, function (i, program) {
@@ -288,7 +290,7 @@
     }
   }
 
-  function loadPersonInForm (person) {
+  function loadPersonInForm(person) {
     console.log('Person in form', person)
     personIndex = Number(person.index) + 1
     $("input[name='nombres']").val(person.data.nombres)
@@ -336,13 +338,13 @@
     disableFormFielfds(true)
     $('.ui.form').removeClass('loading')
   }
-  function modalPayment () {
+  function modalPayment() {
     var onSuccess = function (person) {
       if (person) {
         if (person.isRegistered) {
           personIndex = Number(person.index) + 1
           if (personIndex > -1) {
-            function fullSuccess (result) {
+            function fullSuccess(result) {
               console.log('result', result)
               $('#modal-payment').removeClass('loading')
               $('.ui.modal').modal('hide')
@@ -370,19 +372,14 @@
     }
   }
 
-  function submitPayment () {
+  function submitPayment() {
     $('#register-pay-btn').addClass('loading')
 
     if (personIndex > -1) {
-      function onSuccess (result) {
+      function onSuccess(result) {
         $('#register-pay-btn').removeClass('loading')
         if (result) {
-          //   $("#result-msg").append(`Apreciado Egresado, su inscripción ha sido registrada. Para realizar el pago,
-          //   por favor dar clic en el botón realizar pago
-          //   Recuerde realizar el pago en un periodo menor a 48 horas para reservar su cupo en el evento.
-          //   Una vez realizado el pago, en un lapso máximo de 48 horas recibirá el correo oficial de bienvenida.
-          //   Si presenta alguna dificultad en el proceso de inscripción, por favor escribanos al correo electrónico soyegresado@correounivalle.edu.co`)
-          // $(".ui.modal").modal("show");
+          $(".ui.modal").modal("show");
           console.log('result', result)
           hideForm()
           return true
@@ -395,14 +392,14 @@
     }
   }
 
-  function showForm () {
+  function showForm() {
     $('#mainForm').css('display', 'block')
     $('ui.submit.button').css('display', 'block')
     $("input[name='cedula']").val($('#busca-cedula').val())
     disableFormFielfds(false)
   }
 
-  function hideForm () {
+  function hideForm() {
     $('#mainForm').css('display', 'none')
     $('.fields.regreso').removeClass('not-allowed')
     $('.file-field').removeClass('not-visible')
@@ -420,8 +417,8 @@
     $('.ui.form').form('clear')
   }
 
-  function loadAcademicProgramsAndFaculties () {
-    function onSuccess (result) {
+  function loadAcademicProgramsAndFaculties() {
+    function onSuccess(result) {
       console.log('good job', result)
       if (result) {
         $.each(result.programs, function (i, program) {
@@ -459,8 +456,8 @@
       .getFacultiesAndPrograms()
   }
 
-  function searchPersonInSRA (cedula) {
-    function onSuccess (result) {
+  function searchPersonInSRA(cedula) {
+    function onSuccess(result) {
       console.log('good job', result)
       if (result) {
         var resultObject = JSON.parse(result)
@@ -479,7 +476,7 @@
       .getSRAPerson(cedula)
   }
 
-  function testing () {
+  function testing() {
     var users = []
 
     users.map(function (user, i) {
@@ -487,7 +484,7 @@
     })
   }
 
-  function checkStatus (user) {
+  function checkStatus(user) {
     var result = searchPersonInSRA(user)
     if (result) {
       console.log('OK :D')
@@ -496,7 +493,7 @@
     }
   }
 
-  function formValidation () {
+  function formValidation() {
     $('.ui.form').form({
       inline: true,
       on: 'blur',
