@@ -142,7 +142,7 @@ function generatePayment(index) {
     Logger.log(pagoIndex)
     Logger.log(index)
     logFunctionOutput(generatePayment.name, inscritosSheet.getRange(index, pagoIndex).getValues())
-    inscritosSheet.getRange(index + 1, pagoIndex + 1).setValues([['SI']])
+    inscritosSheet.getRange(index, pagoIndex + 1).setValues([['SI']])
     return true
 }
 

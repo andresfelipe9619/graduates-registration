@@ -82,28 +82,34 @@
     }
   }
 
+  function getVegetarianField(formData, name) {
+    var index_vegana = -1
+    var vegana = formData.find((field, index) => {
+      index_vegana = index
+      return field.name === name
+    })
+    console.log(name, vegana)
+    return [index_vegana, vegana]
+  }
+
   function addPayment(formData) {
     console.log('all is ok', buttonpressed)
     // if (buttonpressed == "submit-btn") {
     formData.push({ name: 'pago_generado', value: 'NO' })
     // }
+    const [index_vegana, vegana] = getVegetarianField(formData, 'cena_vegetariana1')
+    const [index_vegana2, vegana2] = getVegetarianField(formData, 'cena_vegetariana2')
+    let vegetarianCount = 0;
 
-    var index_vegana = -1
-    var vegana = formData.find((field, index) => {
-      index_vegana = index
-      return field.name == 'cena_vegana'
-    })
-    console.log(vegana)
-    if (index_vegana > -1 && vegana) {
-      if (formData[index_vegana].value == 'on') {
-        formData[index_vegana].value = 'SI'
-      } else {
-        formData[index_vegana].value = 'NO'
-      }
-    } else {
-      formData.push({ name: 'cena_vegana', value: 'NO' })
+    let first = formData[index_vegana].value === 'on'
+    let second = formData[index_vegana2].value === 'on'
+    if (first) {
+      vegetarianCount++
     }
-
+    if (second) {
+      vegetarianCount++
+    }
+    formData.push({ name: 'cena_vegetariana', value: vegetarianCount })
     console.log('form', formData)
     registerPersonInSheet(formData)
   }
@@ -300,10 +306,10 @@
     $("input[name='celular']").val(person.data.celular)
     $("select[name='programa']").dropdown('set selected', person.data.programa)
     $("select[name='facultad']").dropdown('set selected', person.data.facultad)
-    if (person.data['cena_vegana'] == 'SI') {
-      $("input[name='cena_vegana']").prop('checked', true)
+    if (person.data['cena_vegetariana'] == 'SI') {
+      $("input[name='cena_vegetariana']").prop('checked', true)
     } else {
-      $("input[name='cena_vegana']").prop('checked', false)
+      $("input[name='cena_vegetariana']").prop('checked', false)
     }
     if (person.data['pago_comprobado'] == 'SI') {
       $('#pay-msg').removeClass('not-visible')
@@ -342,7 +348,7 @@
     var onSuccess = function (person) {
       if (person) {
         if (person.isRegistered) {
-          personIndex = Number(person.index) + 1
+          personIndex = Number(person.index)
           if (personIndex > -1) {
             function fullSuccess(result) {
               console.log('result', result)
@@ -406,7 +412,7 @@
     $('#submit-btn').removeClass('not-visible')
     $('#submit-pay-btn').removeClass('not-visible')
     $("input[name='politicas']").prop('checked', false)
-    $("input[name='cena_vegana']").prop('checked', false)
+    $("input[name='cena_vegetariana']").prop('checked', false)
     $('.dropdown').dropdown()
     $('.ui.dropdown').removeClass('disabled')
     $('.fields.regreso').removeClass('not-allowed')
