@@ -216,6 +216,7 @@
     $("input[name='nombres']").val(
       full_name[2] + ' ' + (full_name[3] != null ? full_name[3] : '')
     )
+    $("input[name='apellidos']").val(person.fecha_graduacion || "")
     $("input[name='apellidos']").val(full_name[0] + ' ' + full_name[1])
     $("input[name='cedula']").prop('readonly', true)
     $("input[name='cedula']").addClass('not-allowed')
@@ -223,6 +224,8 @@
     $("input[name='nombres']").addClass('not-allowed')
     $("input[name='apellidos']").prop('readonly', true)
     $("input[name='apellidos']").addClass('not-allowed')
+    $("input[name='fecha_graduacion']").prop('readonly', true)
+    $("input[name='fecha_graduacion']").addClass('not-allowed')
     $('.file-field').addClass('not-visible')
     // $(".pay-info").css("display", "none");
 
@@ -304,6 +307,7 @@
     $("input[name='cedula']").val(person.data.cedula)
     $("input[name='correo']").val(person.data.correo)
     $("input[name='celular']").val(person.data.celular)
+    $("input[name='fecha_graduacion']").val(person.data.fecha_graduacion)
     $("select[name='programa']").dropdown('set selected', person.data.programa)
     $("select[name='facultad']").dropdown('set selected', person.data.facultad)
     if (person.data['cena_vegetariana'] == 'SI') {
