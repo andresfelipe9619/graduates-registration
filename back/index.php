@@ -70,8 +70,8 @@ if(isset($_POST["cedula"])){
   $student = preg_replace('/\s+/', ' ', $student);
   $student = explode(" ", trim_all($student));
   $clean_student = str_replace("\\u00a0", "", $student);
-
-  $student_object = array('nombre'=>'','titulo'=>array());
+  echo $clean_student;
+  $student_object = array('nombre'=>'','titulo'=>array(),'fecha'=>'');
   $titulos = array();
   for ($i = 0; $i < count($clean_student); $i++) {
     if(strpos($clean_student[$i], 'Nombre') !== false){
@@ -91,6 +91,7 @@ if(isset($_POST["cedula"])){
             $j = $j +1;
           }else{
             $esta_fecha = true;
+            $student_object['fecha'] = $clean_student[$i+$j+3];
           }
         }
         array_push($titulos,$actualTitulo);
