@@ -216,7 +216,7 @@
     $("input[name='nombres']").val(
       full_name[2] + ' ' + (full_name[3] != null ? full_name[3] : '')
     )
-    $("input[name='apellidos']").val(person.fecha_graduacion || "")
+    $("input[name='apellidos']").val(person.fecha || "")
     $("input[name='apellidos']").val(full_name[0] + ' ' + full_name[1])
     $("input[name='cedula']").prop('readonly', true)
     $("input[name='cedula']").addClass('not-allowed')

@@ -70,7 +70,7 @@ if(isset($_POST["cedula"])){
   $student = preg_replace('/\s+/', ' ', $student);
   $student = explode(" ", trim_all($student));
   $clean_student = str_replace("\\u00a0", "", $student);
-  echo $clean_student;
+
   $student_object = array('nombre'=>'','titulo'=>array(),'fecha'=>'');
   $titulos = array();
   for ($i = 0; $i < count($clean_student); $i++) {
