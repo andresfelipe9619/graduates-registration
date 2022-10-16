@@ -4,12 +4,21 @@
   <head>
     <base target="_top" />
     <meta http-equiv="Content-Security-Policy" content="connect-src http:" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
     <style>
+      #navbar {
+        margin-bottom: 60px;
+      }
+
       #pay-info {
         display: none;
       }
 
+      #main-content {
+        margin-top: 60px;
+      }
+   
       input:not([name='correo']) {
         text-transform: uppercase;
       }
@@ -33,7 +42,7 @@
         width: 70%;
       }
 
-      #id-search {
+      #id-search, #btn-search {
         margin-top: 20px;
       }
 
@@ -59,10 +68,6 @@
           width: 70% !important;
         }
       }
-
-      .ui.column.grid>[class*="twelve wide"].column, .ui.grid>.column.row>[class*="twelve wide"].column, .ui.grid>.row>[class*="twelve wide"].column, .ui.grid>[class*="twelve wide"].column {
-            width: auto !important;
-      }
     </style>
   </head>
 
@@ -76,20 +81,20 @@
       </div>
     </div>
 
-    <div id="main-content" class="ui main container middle center grid">
+    <div id="main-content" class="ui main container grid">
       <div class="one column row fluid" id="id-search">
-        <div id="search-container" class="twelve wide column">
-          <div class="ui fluid action input large">
+        <div id="search-container" class="sixteen wide column">
+          <div class="ui fluid input large">
             <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Ingrese su numero de cédula..."
               type="text" /><br />
-            <button id="btn-search" tabindex="0" class="ui red button" onclick="searchForPerson()">
-              Iniciar proceso de inscripción
-            </button>
           </div>
+          <button id="btn-search" tabindex="0" class="ui red button" onclick="searchForPerson()">
+            Iniciar proceso de inscripción
+          </button>
         </div>
-        <div class="four wide column">
-          <div id="search-msg" class="ui message hidden"></div>
-        </div>
+      </div>
+      <div class="twelve wide column">
+        <div id="search-msg" class="ui message hidden"></div>
       </div>
       <div class="row">
         <div id="mainForm" class="twelve wide center column">
