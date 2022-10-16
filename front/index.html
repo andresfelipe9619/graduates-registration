@@ -6,16 +6,8 @@
     <meta http-equiv="Content-Security-Policy" content="connect-src http:" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
     <style>
-      #navbar {
-        margin-bottom: 60px;
-      }
-
       #pay-info {
         display: none;
-      }
-
-      #main-content {
-        margin-top: 60px;
       }
 
       input:not([name='correo']) {
@@ -67,6 +59,10 @@
           width: 70% !important;
         }
       }
+
+      .ui.column.grid>[class*="twelve wide"].column, .ui.grid>.column.row>[class*="twelve wide"].column, .ui.grid>.row>[class*="twelve wide"].column, .ui.grid>[class*="twelve wide"].column {
+            width: auto !important;
+      }
     </style>
   </head>
 
@@ -75,7 +71,7 @@
       <div class="ui container">
         <h3 class="header item">
           <img class="logo" alt="Logo Universidad del Valle"
-            src="http://www.univalle.edu.co/images/logo-footer.png" />&nbsp;&nbsp;Cena Egresados 2021
+            src="http://www.univalle.edu.co/images/logo-footer.png" />&nbsp;&nbsp;Cena Egresados 2022
         </h3>
       </div>
     </div>
@@ -85,7 +81,7 @@
         <div id="search-container" class="twelve wide column">
           <div class="ui fluid action input large">
             <input id="busca-cedula" name="busca-cedula" class="numeric" placeholder="Ingrese su numero de cédula..."
-              type="text" />
+              type="text" /><br />
             <button id="btn-search" tabindex="0" class="ui red button" onclick="searchForPerson()">
               Iniciar proceso de inscripción
             </button>
@@ -128,7 +124,7 @@
 
             <div class="fields regreso">
               <div class="ten wide field">
-                <label>Programa Académico del cúal Egresó</label>
+                <label>Programa académico del cúal egresó</label>
                 <select name="programa" class="ui dropdown search"> </select>
               </div>
               <div class="six wide field">
@@ -169,7 +165,7 @@
                   vegetariana
                   para egresado
                 </label>
-              </div>
+              </div><br>
               <div class="ui checkbox">
                 <input name="cena_vegetariana2" type="checkbox" aria-label="cena vegetariana">
                 <label>
@@ -196,7 +192,7 @@
 
             <a class="ui red not-visible button" id="register-pay-btn" name="register-pay-btn" onclick="submitPayment()"
               target=" _blank"
-              href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=4415&una_codigo=24&hash=002ddc7e2c170e9d48ef8c4c0c962a92c22f6959">Generar
+              href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=5429&una_codigo=24&hash=1483d543cbaa39684a5d9f3568aa6602ad7a8048">Generar
               pago</a>
           </form>
 
@@ -216,7 +212,7 @@
             <div id="result-msg" class="ui success message"></div>
             <div class="actions">
               <a id="modal-payment" class="ui red right labeled icon button" onclick="modalPayment()" target=" _blank"
-                href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=4415&una_codigo=24&hash=002ddc7e2c170e9d48ef8c4c0c962a92c22f6959">
+                href="https://pagoenlinea.univalle.edu.co/autoliquidacion/?ser_codigo=5429&una_codigo=24&hash=1483d543cbaa39684a5d9f3568aa6602ad7a8048">
                 Generar pago
               </a>
             </div>
