@@ -2,7 +2,7 @@
   $(document).ready(init_js)
   let buttonpressed
   let personIndex
-  function init_js() {
+  function init_js () {
     $('.submit.button').click(function () {
       buttonpressed = $(this).attr('name')
     })
@@ -38,7 +38,7 @@
     })
   }
 
-  function errorHandler(error) {
+  function errorHandler (error) {
     console.log('Error Handler ==>', error)
     let mForm = $('.ui.form')
     mForm.removeClass('loading')
@@ -47,7 +47,7 @@
     errorBox.text(error.toString())
   }
 
-  function validationpassed(e) {
+  function validationpassed (e) {
     try {
       e.preventDefault()
       let mForm = $('.ui.form')
@@ -59,7 +59,7 @@
         let reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onloadend = function (e) {
-          function onSuccess(result) {
+          function onSuccess (result) {
             if (result) {
               formData.push({ name: 'doc_file', value: result.url })
               addPayment(formData)
@@ -82,7 +82,7 @@
     }
   }
 
-  function getVegetarianField(formData, name) {
+  function getVegetarianField (formData, name) {
     let index_vegana = -1
     let vegana = formData.find((field, index) => {
       index_vegana = index
@@ -92,14 +92,20 @@
     return [index_vegana, vegana]
   }
 
-  function addPayment(formData) {
+  function addPayment (formData) {
     console.log('all is ok', buttonpressed)
     // if (buttonpressed == "submit-btn") {
     formData.push({ name: 'pago_generado', value: 'NO' })
     // }
-    const [index_vegana, vegana] = getVegetarianField(formData, 'cena_vegetariana1')
-    const [index_vegana2, vegana2] = getVegetarianField(formData, 'cena_vegetariana2')
-    let vegetarianCount = 0;
+    const [index_vegana, vegana] = getVegetarianField(
+      formData,
+      'cena_vegetariana1'
+    )
+    const [index_vegana2, vegana2] = getVegetarianField(
+      formData,
+      'cena_vegetariana2'
+    )
+    let vegetarianCount = 0
 
     let first = formData[index_vegana].value === 'on'
     let second = formData[index_vegana2].value === 'on'
@@ -114,14 +120,15 @@
     registerPersonInSheet(formData)
   }
 
-  function registerPersonInSheet(formData) {
-    function onSuccess(response) {
+  function registerPersonInSheet (formData) {
+    function onSuccess (response) {
       if (response.ok) {
         $('.ui.form').removeClass('loading')
 
-        $("#result-msg").append(`Su inscripción a la Noche de Gala para Egresados 2022, se ha realizado satisfactoriamente. Usted cuenta
+        $('#result-msg')
+          .append(`Su inscripción a la Noche de Gala para Egresados 2022, se ha realizado satisfactoriamente. Usted cuenta
           con 48 horas para realizar el pago.
-          De no realizar este pago en las próximas 48 horas, su cupo será liberado.`);
+          De no realizar este pago en las próximas 48 horas, su cupo será liberado.`)
         $('.ui.modal').modal('show')
         $('.actions').css('display', 'block')
       } else {
@@ -135,7 +142,7 @@
       .registerPerson(formData)
   }
 
-  function searchForPerson() {
+  function searchForPerson () {
     hideForm()
     $('#btn-search').addClass('loading')
 
@@ -174,7 +181,7 @@
     }
   }
 
-  function disableFormFielfds(bool) {
+  function disableFormFielfds (bool) {
     if (bool) {
       $("input:not([name='busca-cedula'])").prop('readonly', true)
       $("input:not([name='busca-cedula'])").addClass('not-allowed')
@@ -210,13 +217,13 @@
     }
   })()
 
-  function loadSRAPersonInForm(person) {
+  function loadSRAPersonInForm (person) {
     console.log('PersonSRA in form', person)
     let full_name = person.nombre.split(' ')
     $("input[name='nombres']").val(
       full_name[2] + ' ' + (full_name[3] != null ? full_name[3] : '')
     )
-    $("input[name='fecha_graduacion']").val(person.fecha || "")
+    $("input[name='fecha_graduacion']").val(person.fecha || '')
     $("input[name='apellidos']").val(full_name[0] + ' ' + full_name[1])
     $("input[name='cedula']").prop('readonly', true)
     $("input[name='cedula']").addClass('not-allowed')
@@ -243,7 +250,10 @@
       programArray.splice(-1, 1)
       let firstProgramWord = programArray[0]
 
-      let lessWord = firstProgramWord.slice(0, firstProgramWord.length - 3)
+      let firstWordWithoutGenre = firstProgramWord.slice(
+        0,
+        firstProgramWord.length - 3
+      )
       let restProgramWords = programArray
         .slice(1, programArray.length)
         .join(' ')
@@ -252,45 +262,35 @@
         restProgramWords.length - 3
       )
 
-      console.log(programArray)
-      console.log(firstProgramWord)
-      console.log(lessWord)
-      console.log(restFemenineWord)
-      function onSuccess(result) {
-        let isGood = false
-        if (result) {
-          $.each(result.programs, function (i, program) {
-            // console.log('rest')
-            //console.log(restFemenineWord)
-            // console.log(String(program["titulo_otorgado"]))
+      console.log("User's programs: ", programArray)
+      console.log('First Program Word: ', firstProgramWord)
+      console.log('First Word without Genre: ', firstWordWithoutGenre)
+      console.log('Rest Word without Genre: ', restFemenineWord)
+      function onSuccess (result) {
+        let haveFoundProgram = false
+        if (!result) return haveFoundProgram
+        $.each(result.programs, function (i, program) {
+          const title = String(program['titulo_otorgado'])
 
-            if (
-              String(program['titulo_otorgado']).includes(restFemenineWord) > 0
-            ) {
-              console.log('OMG', String(program['titulo_otorgado']).split(' '))
+          if (title.includes(restFemenineWord) && !haveFoundProgram) {
+            const parts = title.split(' ')
+            console.log('OMG', parts)
+            const [first] = parts
+            if (first.includes(firstWordWithoutGenre)) {
+              console.log('first')
 
-              if (
-                String(program['titulo_otorgado'])
-                  .split(' ')[0]
-                  .includes(lessWord) > 0
-              ) {
-                console.log('first')
-
-                $("select[name='programa']").dropdown(
-                  'set selected',
-                  program.nombre
-                )
-                $('.dropdown').dropdown()
-                $('.ui.dropdown').addClass('disabled')
-                $('.fields.regreso').addClass('not-allowed')
-                isGood = true
-              }
-            } else {
-              isGood = false
+              $("select[name='programa']").dropdown(
+                'set selected',
+                program.nombre
+              )
+              $('.dropdown').dropdown()
+              $('.ui.dropdown').addClass('disabled')
+              $('.fields.regreso').addClass('not-allowed')
+              haveFoundProgram = true
             }
-          })
-          $('.ui.form').removeClass('loading')
-        } else return isGood
+          }
+        })
+        $('.ui.form').removeClass('loading')
       }
       return google.script.run
         .withSuccessHandler(onSuccess)
@@ -299,7 +299,7 @@
     }
   }
 
-  function loadPersonInForm(person) {
+  function loadPersonInForm (person) {
     console.log('Person in form', person)
     personIndex = Number(person.index) + 1
     $("input[name='nombres']").val(person.data.nombres)
@@ -348,13 +348,13 @@
     disableFormFielfds(true)
     $('.ui.form').removeClass('loading')
   }
-  function modalPayment() {
+  function modalPayment () {
     let onSuccess = function (person) {
       if (person) {
         if (person.isRegistered) {
           personIndex = Number(person.index)
           if (personIndex > -1) {
-            function fullSuccess(result) {
+            function fullSuccess (result) {
               console.log('result', result)
               $('#modal-payment').removeClass('loading')
               $('.ui.modal').modal('hide')
@@ -382,14 +382,14 @@
     }
   }
 
-  function submitPayment() {
+  function submitPayment () {
     $('#register-pay-btn').addClass('loading')
 
     if (personIndex > -1) {
-      function onSuccess(result) {
+      function onSuccess (result) {
         $('#register-pay-btn').removeClass('loading')
         if (result) {
-          $(".ui.modal").modal("show");
+          $('.ui.modal').modal('show')
           console.log('result', result)
           hideForm()
           return true
@@ -402,14 +402,14 @@
     }
   }
 
-  function showForm() {
+  function showForm () {
     $('#mainForm').css('display', 'block')
     $('ui.submit.button').css('display', 'block')
     $("input[name='cedula']").val($('#busca-cedula').val())
     disableFormFielfds(false)
   }
 
-  function hideForm() {
+  function hideForm () {
     $('#mainForm').css('display', 'none')
     $('.fields.regreso').removeClass('not-allowed')
     $('.file-field').removeClass('not-visible')
@@ -427,8 +427,8 @@
     $('.ui.form').form('clear')
   }
 
-  function loadAcademicProgramsAndFaculties() {
-    function onSuccess(result) {
+  function loadAcademicProgramsAndFaculties () {
+    function onSuccess (result) {
       console.log('good job', result)
       if (result) {
         $.each(result.programs, function (i, program) {
@@ -466,8 +466,8 @@
       .getFacultiesAndPrograms()
   }
 
-  function searchPersonInSRA(cedula) {
-    function onSuccess(result) {
+  function searchPersonInSRA (cedula) {
+    function onSuccess (result) {
       console.log('good job', result)
       if (result) {
         let resultObject = JSON.parse(result)
@@ -486,7 +486,7 @@
       .getSRAPerson(cedula)
   }
 
-  function testing() {
+  function testing () {
     let users = []
 
     users.map(function (user, i) {
@@ -494,7 +494,7 @@
     })
   }
 
-  function checkStatus(user) {
+  function checkStatus (user) {
     let result = searchPersonInSRA(user)
     if (result) {
       console.log('OK :D')
@@ -503,7 +503,7 @@
     }
   }
 
-  function formValidation() {
+  function formValidation () {
     $('.ui.form').form({
       inline: true,
       on: 'blur',
